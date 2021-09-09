@@ -1,4 +1,4 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
-public class ClothingDatabase {
+public interface ClothingDAO {
 }
