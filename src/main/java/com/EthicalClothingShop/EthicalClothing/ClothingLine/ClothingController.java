@@ -3,7 +3,7 @@ package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
- // API layer
+
 @RestController
 @RequestMapping(path = "api/clothes")
 public class ClothingController {
