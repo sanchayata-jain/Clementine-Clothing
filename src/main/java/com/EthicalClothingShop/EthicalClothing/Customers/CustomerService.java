@@ -13,17 +13,17 @@ public class CustomerService {
     }
 
     public List<Customer> getAllCustomers() {
-        return customerDataAccessService.allCustomers();
+        return customerDataAccessService.getAllCustomers();
     }
 
     public Customer getCustomer(int Id) {
-        List<Customer> customers = customerDataAccessService.allCustomers();
+        List<Customer> customers = customerDataAccessService.getAllCustomers();
         return customers.stream().filter(c -> c.getId() == Id).findFirst().orElseThrow(() -> new IllegalStateException("Sorry this" + Id + "does not exist"));
 
     }
 
     private boolean doesCustomerExist(String customerEmail) {
-        List<Customer> customers = customerDataAccessService.allCustomers();
+        List<Customer> customers = customerDataAccessService.getAllCustomers();
         return customers.stream().anyMatch(c -> c.getEmail().equals(customerEmail));
 
 
@@ -45,11 +45,17 @@ public class CustomerService {
     }
 
     public void updateNewEmailAddress(Customer customer) {
-        List<Customer> customers = customerDataAccessService.allCustomers();
+        List<Customer> customers = customerDataAccessService.getAllCustomers();
         boolean foundCustomer = false;
         for (Customer customer1 : customers) {
             if (doesCustomerExist(customer1.getEmail())) {
                 customer1.setEmail(customer.getEmail());
+                customer1.setMobileNumber(customer.getMobileNumber());
+                customer1.setFirstLineAddress(customer.getFirstLineAddress());
+                customer1.setCity(customer.getCity());
+                customer1.setPostcode(customer.getPostcode());
+                customer1.setFirstName(customer.getFirstName());
+                customer1.setSurName(customer.getSurName());
                 foundCustomer=true;
             }
 
