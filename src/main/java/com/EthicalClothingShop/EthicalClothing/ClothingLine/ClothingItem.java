@@ -11,10 +11,13 @@ public class ClothingItem {
     private String color;
     private int size;
     private String material;
-    private BigDecimal price;
-    private boolean hasBeenBought;
+    private double price;
+    private boolean inStock;
 
-    public ClothingItem(String type, long id, String description, String color, int size, String material, BigDecimal price, boolean hasBeenBought) {
+    public ClothingItem(Long id, String type, String description,
+                        String color, int size, String material,
+                        double price) {
+
         this.type = type;
         this.id = id;
         this.description = description;
@@ -22,7 +25,7 @@ public class ClothingItem {
         this.size = size;
         this.material = material;
         this.price = price;
-        this.hasBeenBought = hasBeenBought;
+        this.inStock = true;
     }
 
     public String getType() {
@@ -33,11 +36,11 @@ public class ClothingItem {
         this.type = type;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -73,20 +76,20 @@ public class ClothingItem {
         this.material = material;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public boolean isHasBeenBought() {
-        return hasBeenBought;
+    public boolean isInStock() {
+        return inStock;
     }
 
-    public void setHasBeenBought(boolean hasBeenBought) {
-        this.hasBeenBought = hasBeenBought;
+    public void setInStock(boolean inStock) {
+        this.inStock = inStock;
     }
 
     @Override
@@ -99,22 +102,23 @@ public class ClothingItem {
                 ", size=" + size +
                 ", material='" + material + '\'' +
                 ", price=" + price +
-                ", hasBeenBought=" + hasBeenBought +
+                ", hasBeenBought=" + inStock +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClothingItem that = (ClothingItem) o;
-        return id == that.id && size == that.size && hasBeenBought == that.hasBeenBought && Objects.equals(type, that.type) && Objects.equals(description, that.description) && Objects.equals(color, that.color) && Objects.equals(material, that.material) && Objects.equals(price, that.price);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, id, description, color, size, material, price, hasBeenBought);
-    }
 }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        ClothingItem that = (ClothingItem) o;
+//        return id == that.id && size == that.size && inStock == that.inStock && Objects.equals(type, that.type) && Objects.equals(description, that.description) && Objects.equals(color, that.color) && Objects.equals(material, that.material) && Objects.equals(price, that.price);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(type, id, description, color, size, material, price, inStock);
+//    }
+//}
 
 

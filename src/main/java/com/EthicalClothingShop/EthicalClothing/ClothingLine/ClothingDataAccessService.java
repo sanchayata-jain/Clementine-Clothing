@@ -1,6 +1,7 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class ClothingDataAccessService implements ClothingDAO{
@@ -8,7 +9,14 @@ public class ClothingDataAccessService implements ClothingDAO{
 
     // constructor
     public ClothingDataAccessService() {
+
         this.clothingItems = new ArrayList<ClothingItem>();
+        this.clothingItems.add(new ClothingItem(1l, "t-shirt", "cool top",
+                                              "red", 6, "silk", 55.90));
+    }
+
+    public ArrayList<ClothingItem> getClothingItems() {
+        return clothingItems;
     }
 
     @Override

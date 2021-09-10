@@ -33,7 +33,7 @@ public class ClothingController {
 
     @PostMapping
     public void addClothingItem(@RequestBody ClothingItem clothingItem) {
-        clothingService.addNewClothingItem(clothingItem);
+        clothingService.addClothingItem(clothingItem);
     }
 
     @DeleteMapping("{clothingDescription}")
@@ -43,7 +43,7 @@ public class ClothingController {
 
     @PutMapping
     public void editClothingItem(@RequestBody ClothingItem clothingItem) {
-        clothingService.updateClothingItem(clothingItem);
+        clothingService.updateClothingItem(clothingItem.getId());
     }
 
 
