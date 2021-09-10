@@ -8,12 +8,10 @@ import java.util.List;
 
 @Service
 public class ClothingService {
-    private ClothingDAO clothingDAO;
     private ClothingDataAccessService clothingDataAccessService;
 
-    public ClothingService(ClothingDataAccessService clothingDataAccessService,ClothingDAO clothingDAO) {
+    public ClothingService(ClothingDataAccessService clothingDataAccessService) {
         this.clothingDataAccessService = clothingDataAccessService;
-        this.clothingDAO = clothingDAO;
     }
 
 
