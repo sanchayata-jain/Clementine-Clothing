@@ -1,9 +1,12 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ClothingService {
     private ClothingDAO clothingDAO;
     private ClothingDataAccessService clothingDataAccessService;
@@ -73,15 +76,14 @@ public class ClothingService {
 
     public void removeOneClothingItem(String clothingItemDescription){
         ArrayList<ClothingItem> clothingItems = clothingDataAccessService.getClothingItems();
-        boolean requestTypeFound=false;
+        boolean requestTypeFound = false;
         for(ClothingItem clothingItem:clothingItems){
             if(clothingItem.getDescription().equals(clothingItemDescription)){
-                requestTypeFound=true;
+                requestTypeFound = true;
                 clothingDataAccessService.removeClothingItem(clothingItem);
             }
-        }if(!requestTypeFound){
+        }if (!requestTypeFound) {
             throw new IllegalStateException("sorry this Item does not exist!");
-
         }
     }
 
