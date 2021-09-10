@@ -84,7 +84,7 @@ public class ClothingItem {
         this.price = price;
     }
 
-    public boolean isInStock() {
+    public boolean getIsInStock() {
         return inStock;
     }
 

@@ -29,7 +29,7 @@ public class ClothingService {
         ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
 
         for (ClothingItem clothing : clothingItems) {
-            if (clothing.getType().equals(clothingType) && !clothing.isInStock()) {
+            if (clothing.getType().equals(clothingType) && !clothing.getIsInStock()) {
 //
                 clothingItemByType.add(clothing);
                 requestedTypeFound = true;
@@ -56,7 +56,7 @@ public class ClothingService {
         ArrayList<ClothingItem> clothingItems = clothingDataAccessService.getClothingItems();
         ClothingItem clothingItem = null;
         for (ClothingItem clothing : clothingItems) {
-            if (clothing.getDescription().equals(clothingName) && !clothing.isInStock()) {
+            if (clothing.getDescription().equals(clothingName) && !clothing.getIsInStock()) {
                 clothingItem = clothing;
                 requestedTypeFound = true;
             }
@@ -88,15 +88,18 @@ public class ClothingService {
     }
 
 
-    public void updateClothingItem(Long id) {
-        double newPrice = 65;
+    public void updateClothingItem(ClothingItem updatedClothingItem) {
         ArrayList<ClothingItem> clothingItems = clothingDataAccessService.getClothingItems();
         boolean requestTypeFound = false;
-        for (ClothingItem clothingItem:clothingItems) {
-           if (clothingItem.getId() == id) {
+        for (ClothingItem clothingItem :clothingItems) {
+           if (clothingItem.getId() == updatedClothingItem.getId()) {
                requestTypeFound = true;
-               //clothingItem.setId(id);
-               clothingItem.setPrice(newPrice);
+               clothingItem.setPrice(updatedClothingItem.getPrice());
+               clothingItem.setColor(updatedClothingItem.getColor());
+               clothingItem.setSize(updatedClothingItem.getSize());
+               clothingItem.setDescription(updatedClothingItem.getDescription());
+               clothingItem.setMaterial(updatedClothingItem.getMaterial());
+               clothingItem.setInStock(updatedClothingItem.getIsInStock());
            }
         }
 

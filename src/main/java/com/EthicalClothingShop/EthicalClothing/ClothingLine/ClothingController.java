@@ -43,7 +43,7 @@ public class ClothingController {
 
     @PutMapping
     public void editClothingItem(@RequestBody ClothingItem clothingItem) {
-        clothingService.updateClothingItem(clothingItem.getId());
+        clothingService.updateClothingItem(clothingItem);
     }
 
 
