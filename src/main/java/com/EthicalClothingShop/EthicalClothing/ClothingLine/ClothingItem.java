@@ -1,10 +1,15 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-
+@Entity
+@Table
 public class ClothingItem {
+    @Id
+    @SequenceGenerator(name = "clothingItem_sequence", sequenceName = "clothingItem_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clothingItem_sequence")
     private String type;
     private Long id;
     private String description;
@@ -13,6 +18,7 @@ public class ClothingItem {
     private String material;
     private double price;
     private boolean inStock;
+    private int quantity;
 
     public ClothingItem(Long id, String type, String description,
                         String color, int size, String material,
@@ -26,6 +32,15 @@ public class ClothingItem {
         this.material = material;
         this.price = price;
         this.inStock = true;
+        this.quantity = 1;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getType() {
