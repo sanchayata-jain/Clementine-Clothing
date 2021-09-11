@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
-@Table
+//@Entity
+//@Table
 public class ClothingItem {
-    @Id
-    @SequenceGenerator(name = "clothingItem_sequence", sequenceName = "clothingItem_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clothingItem_sequence")
-    private String type;
+//    @Id
+//    @SequenceGenerator(name = "clothingItem_sequence", sequenceName = "clothingItem_sequence", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clothingItem_sequence")
     private Long id;
+    private String type;
     private String description;
     private String color;
     private int size;
