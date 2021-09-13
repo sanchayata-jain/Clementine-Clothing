@@ -16,9 +16,9 @@ public class ClothingService {
 
 
 
-//    public List<ClothingItem> getClothingItems() {
-//        return database_access.getClothingItems();
-//    }
+    public List<ClothingItem> getClothingItems() {
+        return database_access.getClothingItems();
+    }
 //
 //
 //    public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {
@@ -65,18 +65,18 @@ public class ClothingService {
     }
 
 
-//    public void removeOneClothingItem(String clothingItemDescription){
-//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
-//        boolean requestTypeFound = false;
-//        for(ClothingItem clothingItem:clothingItems){
-//            if(clothingItem.getDescription().equals(clothingItemDescription)){
-//                requestTypeFound = true;
-//                database_access.removeClothingItem(clothingItem);
-//            }
-//        }if (!requestTypeFound) {
-//            throw new IllegalStateException("sorry this Item does not exist!");
-//        }
-//    }
+    public void removeClothingItem(int clothesBarcode){
+        List<ClothingItem> clothingItems = database_access.getClothingItems();
+        boolean requestTypeFound = false;
+        for(ClothingItem clothingItem:clothingItems){
+            if(clothingItem.getId() == clothesBarcode){
+                requestTypeFound = true;
+                database_access.removeClothingItem(clothingItem);
+            }
+        }if (!requestTypeFound) {
+            throw new IllegalStateException("sorry this Item does not exist!");
+        }
+    }
 
 
 //    public void updateClothingItem(ClothingItem updatedClothingItem) {

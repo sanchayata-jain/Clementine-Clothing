@@ -16,10 +16,10 @@ public class ClothingController {
     }
 
     //methods
-//    @GetMapping
-//    public List<ClothingItem> getAllClothingItems() {
-//        return clothingService.getClothingItems();
-//    }
+    @GetMapping
+    public List<ClothingItem> getAllClothingItems() {
+        return clothingService.getClothingItems();
+    }
 //
 //    @GetMapping("{clothingType}")
 //    public List <ClothingItem> getClothingItemsByType(@PathVariable("clothingType") String clothingType) {
@@ -36,10 +36,10 @@ public class ClothingController {
         clothingService.addClothingItem(clothingItem);
     }
 
-//    @DeleteMapping("{clothingDescription}")
-//    public void removeClothingItem(@PathVariable("clothingDescription") String clothingDescription) {
-//        clothingService.removeOneClothingItem(clothingDescription);
-//    }
+    @DeleteMapping("{barcode}")
+    public void removeAllClothingItemsOfSameBarcode(@PathVariable("barcode") int id) {
+        clothingService.removeClothingItem(id);
+    }
 //
 //    @PutMapping
 //    public void editClothingItem(@RequestBody ClothingItem clothingItem) {
