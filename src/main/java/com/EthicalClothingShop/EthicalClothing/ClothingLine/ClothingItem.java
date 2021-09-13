@@ -2,7 +2,7 @@ package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
 
 public class ClothingItem {
-    private Long id;
+    private int id;
     private String type;
     private String subtype;
     private String color;
@@ -11,8 +11,8 @@ public class ClothingItem {
     private double price;
     private int quantity;
 
-    public ClothingItem(Long id, String type, String subtype,
-                        String color, String size, String material,
+    public ClothingItem(int id, String type, String subtype,
+                        String size, String color, String material,
                         double price, int quantity) {
 
         this.type = type;
@@ -26,7 +26,7 @@ public class ClothingItem {
     }
 
     // getter methods
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class ClothingItem {
     // setter methods
 
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -42,7 +42,7 @@ public class ClothingController {
     }
 //
 //    @PutMapping
-//    public void editClothingItem(@RequestBody ClothingItem clothingItem) {
+//    public void editClothingItem(@RequestBody ClothingItem clothingItem)
 //        clothingService.updateClothingItem(clothingItem);
 //    }
 

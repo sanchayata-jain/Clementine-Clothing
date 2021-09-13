@@ -59,7 +59,7 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
     private static final class ClothingItemMapper implements RowMapper<ClothingItem> {
         @Override
         public ClothingItem mapRow(ResultSet rs, int rowNum) throws SQLException {
-            ClothingItem clothingItem = new ClothingItem(rs.getLong("clothing_id"), rs.getString("type_name"),
+            ClothingItem clothingItem = new ClothingItem(rs.getInt("clothing_id"), rs.getString("type_name"),
                                                          rs.getString("subtype_name"), rs.getString("size_name"),
                                                          rs.getString("color_name"), rs.getString("material_name"),
                                                          rs.getInt("quantity"), rs.getInt("unit_retail_price"));
@@ -108,11 +108,10 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
 
     @Override
     public void removeClothingItem(ClothingItem clothingItem) {
-        String removeClothingItemRecord = """
-                    DELETE FROM clothing_items_inventory
-                    WHERE clothing_id = ?""" + "'" + clothingItem.getId() + "'";
-        jdbcTemplate.execute(removeClothingItemRecord);
-
+//        String removeClothingItemRecord = """
+//                    DELETE FROM clothing_items_inventory
+//                    WHERE clothing_id = ?"""  + clothingItem.getId();
+        jdbcTemplate.update("DELETE FROM clothing_items_inventory WHERE clothing_id = " + clothingItem.getId());
     }
 
 //    public void removeClothingItemBySize(String clothingItemSize) {
