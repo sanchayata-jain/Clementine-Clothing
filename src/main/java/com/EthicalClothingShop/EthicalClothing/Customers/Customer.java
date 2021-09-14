@@ -29,7 +29,8 @@ public class Customer {
         this.id = id;
     }
 
-    public Customer(String firstName, String lastName, String email, BigInteger mobileNumber) {
+    public Customer(int id, String firstName, String lastName, String email, BigInteger mobileNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
