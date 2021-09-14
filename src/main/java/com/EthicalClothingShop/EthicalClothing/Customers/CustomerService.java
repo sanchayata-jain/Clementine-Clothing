@@ -3,6 +3,7 @@ import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingDataAccessSe
 import jdk.jshell.execution.LoaderDelegate;
 import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,9 +36,9 @@ public class CustomerService {
        database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
     }
 
-    public void addItemsToBasket() {
-        
-        database_access_customer.addItemsToBasket(this.customerAccountInfo.getId(), )
+
+    public void addItemsToBasket(int clothingId, int quantity) {
+        database_access_customer.addItemsToBasket(this.customerAccountInfo.getId(), clothingId, quantity);
     }
 
 

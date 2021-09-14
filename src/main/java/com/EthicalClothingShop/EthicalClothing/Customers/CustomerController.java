@@ -14,12 +14,18 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @GetMapping()
+    @GetMapping
     public Customer getCustomerAccountInfoWhenLoggingIn(@RequestParam String email,
                                                         @RequestParam String password) {
         Customer customerAccountInfo = customerService.getCustomer(email, password);
 
         return customerAccountInfo;
+    }
+
+    @PostMapping
+    public void customerAddsItemToBasket(@RequestParam int clothing_id,
+                                         @RequestParam int quantity) {
+        customerService.addItemsToBasket(clothing_id, quantity);
     }
 
 

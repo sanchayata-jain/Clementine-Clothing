@@ -87,4 +87,11 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
     }
 
+    public void addItemsToBasket(int customerId, int clothingId, int quantity) {
+        String addItemsToBasketQuery = """
+                INSERT INTO basket_content(customer_id, clothing_id, quantity)
+                VALUES(?,?,?)
+                """;
+        jdbcTemplate.update(addItemsToBasketQuery, customerId, clothingId, quantity);
+    }
 }
