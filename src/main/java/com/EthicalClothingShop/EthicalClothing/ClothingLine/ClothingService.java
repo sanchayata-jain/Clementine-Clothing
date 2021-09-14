@@ -16,8 +16,22 @@ public class ClothingService {
 
 
 
-    public List<ClothingItem> getClothingItems() {
-        return database_access.getClothingItems();
+    public List<ClothingItem> getClothingItems(String type) {
+
+        List<ClothingItem> clothingItems = database_access.getClothingItems();
+        ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
+        boolean requestedTypeFound = false;
+        for (ClothingItem clothingItem : clothingItems) {
+            if (type != null && type.length()>0 &&
+                    clothingItem.getType().equals(type)) {
+                requestedTypeFound = true;
+                clothingItemByType.add(clothingItem);
+            }
+        }
+        if (!requestedTypeFound) {
+            throw new IllegalStateException("We do not have this type of clothing");
+        }
+        return clothingItemByType;
     }
 
 //    public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {

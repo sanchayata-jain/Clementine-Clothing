@@ -17,7 +17,6 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
 
     // constructor
     public ClothingDataAccessServicePsql(JdbcTemplate jdbcTemplate) {
-
         this.jdbcTemplate = jdbcTemplate;
     }
 

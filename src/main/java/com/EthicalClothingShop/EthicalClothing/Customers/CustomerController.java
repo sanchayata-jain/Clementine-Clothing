@@ -22,11 +22,18 @@ public class CustomerController {
     @GetMapping("{customerID}")
     public Customer getCustomerById(@PathVariable("customerID") int customerID) {
         return customerService.getCustomer(customerID);
-
     }
+
+    @GetMapping()
+    public Customer getCustomerAccountInfoWhenLoggingIn(@RequestParam String email,
+                                           @RequestParam String password) {
+        return customerService.getCustomer(email, password);
+    }
+
+
     @PutMapping
-    public void updateEmailAddress(@RequestBody Customer customer){
-        customerService.updateNewEmailAddress(customer);
+    public void updateAccountDetails(@RequestBody Customer customer){
+        customerService.updateAccountDetails(customer);
     }
     @DeleteMapping("{customerName}")
     public void deleteCustomer(@PathVariable("customerName") Customer customerName){

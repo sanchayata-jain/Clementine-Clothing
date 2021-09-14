@@ -6,10 +6,10 @@ import java.util.List;
 
 @Service
 public class CustomerService {
-    private CustomerDataAccessService customerDataAccessService;
+    private CustomerDataAccessServicePsql database_access_customer;
 
-    public CustomerService(CustomerDataAccessService customerDataAccessService) {
-        this.customerDataAccessService = customerDataAccessService;
+    public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
+        this. database_access_customer = customerDataAccessServicePsql;
     }
 
     public List<Customer> getAllCustomers() {
@@ -19,21 +19,21 @@ public class CustomerService {
     public Customer getCustomer(int Id) {
         List<Customer> customers = customerDataAccessService.getAllCustomers();
         return customers.stream().filter(c -> c.getId() == Id).findFirst().orElseThrow(() -> new IllegalStateException("Sorry this" + Id + "does not exist"));
+    }
 
+    public Customer getCustomer(String email, String password) {
+        return database_access_customer.getCustomerAccountInfo(email, password);
     }
 
     private boolean doesCustomerExist(String customerEmail) {
         List<Customer> customers = customerDataAccessService.getAllCustomers();
         return customers.stream().anyMatch(c -> c.getEmail().equals(customerEmail));
-
-
     }
 
     public void addCustomer(Customer customer) {
         if (!doesCustomerExist(customer.getEmail())) {
             customerDataAccessService.addNewCustomer(customer);
         }
-
     }
 
     public void removeCustomer(Customer customer) {
@@ -44,7 +44,7 @@ public class CustomerService {
         }
     }
 
-    public void updateNewEmailAddress(Customer customer) {
+    public void updateAccountDetails(Customer customer) {
         List<Customer> customers = customerDataAccessService.getAllCustomers();
         boolean foundCustomer = false;
         for (Customer customer1 : customers) {
@@ -55,7 +55,7 @@ public class CustomerService {
                 customer1.setCity(customer.getCity());
                 customer1.setPostcode(customer.getPostcode());
                 customer1.setFirstName(customer.getFirstName());
-                customer1.setSurName(customer.getSurName());
+                customer1.setLastName(customer.getLastName());
                 foundCustomer=true;
             }
 

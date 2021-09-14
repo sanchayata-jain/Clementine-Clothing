@@ -1,42 +1,53 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 public class Customer {
     private String firstName;
-    private String surName;
+    private String lastName;
     private String firstLineAddress;
     private String city;
     private String postcode;
     private String email;
-    private String mobileNumber;
+    private BigInteger mobileNumber;
+    private String password;
     private int id;
 
-    public Customer(String firstName, String surName, String firstLineAddress, String city, String postcode, String email, String mobileNumber,int id) {
+    public Customer(String firstName, String lastName, String firstLineAddress,
+                    String city, String postcode, String email,
+                    BigInteger mobileNumber,int id, String password) {
+
         this.firstName = firstName;
-        this.surName = surName;
+        this.lastName = lastName;
         this.firstLineAddress = firstLineAddress;
         this.city = city;
         this.postcode = postcode;
         this.email = email;
         this.mobileNumber = mobileNumber;
+        this.password = password;
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Customer(String firstName, String lastName, String email, BigInteger mobileNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
     }
+
+    public String getFirstName() { return firstName; }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getSurName() {
-        return surName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurName(String surName) {
-        this.surName = surName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getFirstLineAddress() {
@@ -71,11 +82,11 @@ public class Customer {
         this.email = email;
     }
 
-    public String getMobileNumber() {
+    public BigInteger getMobileNumber() {
         return mobileNumber;
     }
 
-    public void setMobileNumber(String mobileNumber) {
+    public void setMobileNumber(BigInteger mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 
@@ -91,7 +102,7 @@ public class Customer {
     public String toString() {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
-                ", surName='" + surName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", firstLineAddress='" + firstLineAddress + '\'' +
                 ", city='" + city + '\'' +
                 ", postcode='" + postcode + '\'' +
@@ -105,11 +116,11 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return mobileNumber == customer.mobileNumber && Objects.equals(firstName, customer.firstName) && Objects.equals(surName, customer.surName) && Objects.equals(firstLineAddress, customer.firstLineAddress) && Objects.equals(city, customer.city) && Objects.equals(postcode, customer.postcode) && Objects.equals(email, customer.email);
+        return mobileNumber == customer.mobileNumber && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(firstLineAddress, customer.firstLineAddress) && Objects.equals(city, customer.city) && Objects.equals(postcode, customer.postcode) && Objects.equals(email, customer.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, surName, firstLineAddress, city, postcode, email, mobileNumber);
+        return Objects.hash(firstName, lastName, firstLineAddress, city, postcode, email, mobileNumber);
     }
 }

@@ -17,12 +17,9 @@ public class ClothingController {
 
     //methods
     @GetMapping
-    public List<ClothingItem> getAllClothingItems(@RequestParam(required = false) String type,
-                                                  @RequestParam(required = false) String subtype,
-                                                  @RequestParam(required = false) String size,
-                                                  @RequestParam(required = false) String color) {
+    public List<ClothingItem> getAllClothingItems(@RequestParam(required = true) String type) {
 
-        return clothingService.getClothingItems(type, subtype, size, color);
+        return clothingService.getClothingItems(type);
     }
 
 //    @GetMapping("{clothingType}")
