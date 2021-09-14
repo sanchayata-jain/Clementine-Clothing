@@ -19,15 +19,14 @@ public class ClothingService {
     public List<ClothingItem> getClothingItems() {
         return database_access.getClothingItems();
     }
-//
-//
+
 //    public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {
 //        boolean requestedTypeFound = false;
-//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
+//        List<ClothingItem> clothingItems = database_access.getClothingItems();
 //        ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
 //
 //        for (ClothingItem clothing : clothingItems) {
-//            if (clothing.getType().equals(clothingType) && !clothing.getIsInStock()) {
+//            if (clothing.getType().equals(clothingType)) {
 ////
 //                clothingItemByType.add(clothing);
 //                requestedTypeFound = true;
@@ -61,6 +60,7 @@ public class ClothingService {
 
 
     public void addClothingItem(ClothingItem clothingItem) {
+
         database_access.addClothingItem(clothingItem);
     }
 
@@ -80,7 +80,7 @@ public class ClothingService {
 
 
 //    public void updateClothingItem(ClothingItem updatedClothingItem) {
-//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
+//        List<ClothingItem> clothingItems = database_access.getClothingItems();
 //        boolean requestTypeFound = false;
 //        for (ClothingItem clothingItem :clothingItems) {
 //           if (clothingItem.getId() == updatedClothingItem.getId()) {
@@ -88,9 +88,12 @@ public class ClothingService {
 //               clothingItem.setPrice(updatedClothingItem.getPrice());
 //               clothingItem.setColor(updatedClothingItem.getColor());
 //               clothingItem.setSize(updatedClothingItem.getSize());
-//               clothingItem.setDescription(updatedClothingItem.getDescription());
+//               clothingItem.setDescription(updatedClothingItem.getType());
 //               clothingItem.setMaterial(updatedClothingItem.getMaterial());
-//               clothingItem.setInStock(updatedClothingItem.getIsInStock());
+
+                 //remove clothingItem from database
+                // add clothingItem to database
+
 //           }
 //        }
 //

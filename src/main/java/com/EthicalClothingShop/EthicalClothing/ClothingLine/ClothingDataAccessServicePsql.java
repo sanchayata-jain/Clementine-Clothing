@@ -1,17 +1,14 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
-import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Array;
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Repository
 public class ClothingDataAccessServicePsql implements ClothingDAO{
