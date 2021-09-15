@@ -53,26 +53,21 @@ public class CustomerService {
         database_access_customer.removeItemFromBasket(clothingId);
     }
 
-    public void addNewCustomerAccount(String firstName,
-                                      String lastName,
-                                      String email,
-                                      String mobile,
-                                      String firstLineBillingAddress,
-                                      String secondLineBillingAddress,
-                                      String billingCityOrTown,
-                                      String billingPostcode,
-                                      String firstLineDeliveryAddress,
-                                      String secondLineDeliveryAddress,
-                                      String deliveryCityOrTown,
+    public void addNewCustomerAccount(String firstName, String lastName, String email,
+                                      String mobile, String firstLineBillingAddress, String secondLineBillingAddress,
+                                      String billingCityOrTown, String billingCountyOrState, String billingPostcode,
+                                      String firstLineDeliveryAddress, String secondLineDeliveryAddress,
+                                      String deliveryCityOrTown, String deliveryCountyOrState,
                                       String deliveryPostcode) {
+
         boolean customerExists = this.doesCustomerExist(email);
         if (!customerExists) {
             int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email, mobile);
             // add both billing and delivery address
-            this.addNewCustomerAddress(newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
-                    billingCityOrTown, billingPostcode);
-            this.addNewCustomerAddress(newCustomerId, firstLineDeliveryAddress, secondLineDeliveryAddress,
-                    deliveryCityOrTown, deliveryPostcode);
+            this.addNewCustomerAddresses(newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
+                                        billingCityOrTown, billingCountyOrState, billingPostcode,
+                                        firstLineDeliveryAddress, secondLineDeliveryAddress,
+                                        deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode);
         } else {
             // need to throw an error
             System.out.println("We already have an account with this email address, please try logging in");
@@ -80,21 +75,43 @@ public class CustomerService {
         }
 
 
-        // use this for when a new customer is being added
-        public void addNewCustomerAddress(int customerId, String firstLineAddress, String secondLineAddress,
-                                          String cityOrTown, String postcode) {
-            database_access_customer.addCustomerAddressToAddressBook(customerId, firstLineAddress, secondLineAddress,
-                                                                     cityOrTown, postcode);
+    // use this for when a new customer is being added
+        private void addNewCustomerAddresses(int newCustomerId, String firstLineBillingAddress, String secondLineBillingAddress,
+                                             String billingCityOrTown, String billingCountyOrState, String billingPostcode,
+                                             String firstLineDeliveryAddress, String secondLineDeliveryAddress,
+                                             String deliveryCityOrTown, String deliveryCountyOrState, String deliveryPostcode) {
+
+            int deliveryAddressId = database_access_customer.addCustomerAddressToAddressBook(
+                    newCustomerId, firstLineDeliveryAddress, secondLineDeliveryAddress,
+                    deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode
+            );
+
+            int billingAddressId = database_access_customer.addCustomerAddressToAddressBook(
+                    newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
+                    billingCityOrTown, billingCountyOrState, billingPostcode
+            );
+
+            database_access_customer.addToCustomerAddressBook(newCustomerId, deliveryAddressId);
+            database_access_customer.addToCustomerAddressBook(newCustomerId, billingAddressId);
+
+            database_access_customer.addDefaultDeliveryAddress(newCustomerId, deliveryAddressId);
+            database_access_customer.addDefaultBillingAddress(newCustomerId, billingAddressId);
 
         }
+
 
         // use this for when a returning customer has logged in and wants to add another address
-        public void addNewCustomerAddress(String firstLineAddress, String secondLineAddress,
-                                          String cityOrTown, String postcode) {
+        public void addCustomerAddress(String firstLineAddress, String secondLineAddress,
+                                          String cityOrTown, String countyOrState, String postcode) {
 
-            database_access_customer.addCustomerAddressToAddressBook(this.customerAccountInfo.getId(), firstLineAddress,
-                                                                     secondLineAddress, cityOrTown, postcode);
+          int addressId = database_access_customer.addCustomerAddressToAddressBook(this.customerAccountInfo.getId(), firstLineAddress,
+                                                                                   secondLineAddress, cityOrTown,
+                                                                                   countyOrState, postcode);
+
+          database_access_customer.addToCustomerAddressBook(this.customerAccountInfo.getId(), addressId);
         }
+
+
     }
 
 

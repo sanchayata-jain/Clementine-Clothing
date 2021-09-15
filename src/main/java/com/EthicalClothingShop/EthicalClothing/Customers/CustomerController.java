@@ -1,6 +1,7 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
 import org.javatuples.Quartet;
+import org.javatuples.Quintet;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,25 +23,40 @@ public class CustomerController {
                                @RequestParam String firstLineBillingAddress,
                                @RequestParam (required = false) String secondLineBillingAddress,
                                @RequestParam String billingCityOrTown,
+                               @RequestParam String billingCountyOrState,
                                @RequestParam String billingPostcode,
                                @RequestParam String firstLineDeliveryAddress,
                                @RequestParam (required = false) String secondLineDeliveryAddress,
                                @RequestParam String deliveryCityOrTown,
+                               @RequestParam String deliveryCountyOrState,
                                @RequestParam String deliveryPostcode) {
 
         customerService.addNewCustomerAccount(firstName, lastName, email,
                        mobile, firstLineBillingAddress, secondLineBillingAddress,
-                       billingCityOrTown, billingPostcode, firstLineDeliveryAddress,
-                       secondLineDeliveryAddress, deliveryCityOrTown, deliveryPostcode);
+                       billingCityOrTown, billingCountyOrState, billingPostcode, firstLineDeliveryAddress,
+                       secondLineDeliveryAddress, deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode);
     }
 
     @PostMapping("/logged_in/add_new_address")
-    public void addNewCustomerAddress(@RequestParam String firstLineAddress,
+    public void addCustomerAddress(@RequestParam String firstLineAddress,
                                       @RequestParam (required = false) String secondLineAddress,
                                       @RequestParam String cityOrTown,
+                                      @RequestParam String countyOrState,
                                       @RequestParam String postcode) {
-        customerService.addNewCustomerAddress(firstLineAddress, secondLineAddress, cityOrTown, postcode);
+        customerService.addCustomerAddress(firstLineAddress, secondLineAddress, cityOrTown, countyOrState, postcode);
     }
+
+//    @GetMapping("/logged_in/address_book")
+//    public Quintet<String, String, String, String, String> getCustomerAddressBook() {
+//
+//    }
+
+//    @PutMapping("/logged_in/address_book/edit_def_deliv_address")
+//
+//    @PutMapping("/logged_in/address_book/edit_def_bill_address")
+
+
+
 
     // @PostMapping customer logs in method @RequestParam email, password (return bool if all okay or not)
     @PostMapping("/logged_in")
@@ -48,7 +64,7 @@ public class CustomerController {
         customerService.setCustomer(email);
     }
 
-    @GetMapping("/account_details")
+    @GetMapping("/logged_in/account_details")
     public Quartet<String, String, String, String> getCustomerAccountDetails() {
         if (customerService.getCustomer() == null) {
             /* possibly throw exception so front end knows user must log in
@@ -83,10 +99,11 @@ public class CustomerController {
 
     @DeleteMapping("/{clothingId}")
     public void customerRemovesItemFromBasket(@PathVariable int clothingId) {
+        //this will remove item from basket, regardless of quantity
         customerService.removeItemFromBasket(clothingId);
     }
 
-    // method for editing basket items is needed @PutMapping
+    // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
 
     //method for customer viewing their basket using a @GetMapping
 

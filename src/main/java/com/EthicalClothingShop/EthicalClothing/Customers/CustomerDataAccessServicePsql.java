@@ -163,8 +163,8 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         return customerId;
     }
 
-    public void addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,
-                                                String cityOrTown, String postcode) {
+    public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,
+                                                String cityOrTown, String countyOrState, String postcode) {
 
         String addItemsToBasketQuery = """
                 INSERT INTO basket_content(customer_id, first_line, second_line, city_town, county_state, postcode)
@@ -172,11 +172,45 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 """;
 
         jdbcTemplate.update(addItemsToBasketQuery, customerId, firstLineAddress,
-                            secondLineAddress, cityOrTown, postcode);
+                            secondLineAddress, cityOrTown, countyOrState, postcode);
 
         // use sql query to get address id and make this method return the address id, will be needed for address book,
         // and for default addresses setting
 
+        String getCustomersAddressIdQuery = ("SELECT address_id FROM addresses " +
+                "WHERE customer_id = " + "" + customerId + "" + " AND " +
+                "first_line LIKE " + "'" + firstLineAddress + "'" + " AND " +
+                "city_town LIKE " + "'" + cityOrTown + "'" + " AND " +
+                "county_state LIKE " + "'" + countyOrState + "'" + " AND " +
+                "postcode LIKE " + "'" + postcode + "'");
+
+        int addressId = jdbcTemplate.queryForObject(getCustomersAddressIdQuery, int.class);
+
+        return addressId;
+    }
+
+    public void addToCustomerAddressBook(int customerId, int addressId) {
+        String insertIntoCustomerAddressBookQuery = """
+                INSERT INTO customer_address_book(customer_id, address_id)
+                VALUES(?,?)
+                """;
+        jdbcTemplate.update(insertIntoCustomerAddressBookQuery, customerId, addressId);
+    }
+
+    public void addDefaultDeliveryAddress(int customerId, int addressId) {
+        String insertDefaultDeliveryQuery = """
+                INSERT INTO default_delivery_address(customer_id, address_id)
+                VALUES(?,?)
+                """;
+        jdbcTemplate.update(insertDefaultDeliveryQuery, customerId, addressId);
+    }
+
+    public void addDefaultBillingAddress(int customerId, int addressId) {
+        String insertDefaultBillingQuery = """
+                INSERT INTO default_billing_address(customer_id, address_id)
+                VALUES(?,?)
+                """;
+        jdbcTemplate.update(insertDefaultBillingQuery, customerId, addressId);
     }
 
 
