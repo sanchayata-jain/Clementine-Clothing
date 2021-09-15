@@ -22,7 +22,7 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
 
     //methods
 
-    public List<ClothingItem> getClothingItems() {
+    public void createClothingInventoryViewTable() {
         String dropViewTableQuery = """
                 DROP VIEW IF EXISTS clothing_inventory;
                 """;
@@ -47,6 +47,11 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
                 """;
 
         jdbcTemplate.execute(createClothingInventoryView);
+
+    }
+
+    public List<ClothingItem> getClothingItems() {
+        createClothingInventoryViewTable();
         List<ClothingItem> allClothingItems = jdbcTemplate.query("SELECT * FROM clothing_inventory", new ClothingItemMapper());
 
         return allClothingItems;
@@ -104,9 +109,6 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
 
     @Override
     public void removeClothingItem(ClothingItem clothingItem) {
-//        String removeClothingItemRecord = """
-//                    DELETE FROM clothing_items_inventory
-//                    WHERE clothing_id = ?"""  + clothingItem.getId();
         jdbcTemplate.update("DELETE FROM clothing_items_inventory WHERE clothing_id = " + clothingItem.getId());
     }
 

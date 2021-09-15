@@ -10,13 +10,13 @@ public class Customer {
     private String city;
     private String postcode;
     private String email;
-    private BigInteger mobileNumber;
+    private String mobileNumber;
     private String password;
     private int id;
 
     public Customer(String firstName, String lastName, String firstLineAddress,
                     String city, String postcode, String email,
-                    BigInteger mobileNumber,int id, String password) {
+                    String mobileNumber,int id, String password) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,7 +29,7 @@ public class Customer {
         this.id = id;
     }
 
-    public Customer(int id, String firstName, String lastName, String email, BigInteger mobileNumber) {
+    public Customer(int id, String firstName, String lastName, String email, String mobileNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -83,11 +83,11 @@ public class Customer {
         this.email = email;
     }
 
-    public BigInteger getMobileNumber() {
+    public String getMobileNumber() {
         return mobileNumber;
     }
 
-    public void setMobileNumber(BigInteger mobileNumber) {
+    public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 
@@ -99,29 +99,29 @@ public class Customer {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", firstLineAddress='" + firstLineAddress + '\'' +
-                ", city='" + city + '\'' +
-                ", postcode='" + postcode + '\'' +
-                ", email='" + email + '\'' +
-                ", mobileNumber=" + mobileNumber +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Customer{" +
+//                "firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", firstLineAddress='" + firstLineAddress + '\'' +
+//                ", city='" + city + '\'' +
+//                ", postcode='" + postcode + '\'' +
+//                ", email='" + email + '\'' +
+//                ", mobileNumber=" + mobileNumber +
+//                '}';
+//    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return mobileNumber == customer.mobileNumber && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(firstLineAddress, customer.firstLineAddress) && Objects.equals(city, customer.city) && Objects.equals(postcode, customer.postcode) && Objects.equals(email, customer.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, firstLineAddress, city, postcode, email, mobileNumber);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Customer customer = (Customer) o;
+//        return mobileNumber == customer.mobileNumber && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(firstLineAddress, customer.firstLineAddress) && Objects.equals(city, customer.city) && Objects.equals(postcode, customer.postcode) && Objects.equals(email, customer.email);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(firstName, lastName, firstLineAddress, city, postcode, email, mobileNumber);
+//    }
 }

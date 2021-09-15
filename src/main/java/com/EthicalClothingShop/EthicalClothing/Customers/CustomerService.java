@@ -1,12 +1,10 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
-import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingDataAccessServicePsql;
-import jdk.jshell.execution.LoaderDelegate;
-import org.apache.tomcat.jni.Local;
+
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Service
 public class CustomerService {
@@ -16,30 +14,96 @@ public class CustomerService {
     // constructor
     public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
         this.database_access_customer = customerDataAccessServicePsql;
+        this.customerAccountInfo = null;
     }
 
-    public Customer getCustomer(String email, String password) {
-        Customer customerAccountInfo = database_access_customer.getCustomerAccountInfo(email, password);
+    public Customer getCustomer() {
+        return this.customerAccountInfo;
+    }
+
+    public void setCustomer(String email) {
+        Customer customerAccountInfo = database_access_customer.getCustomerAccountInfo(email);
         this.customerAccountInfo = customerAccountInfo;
-        return customerAccountInfo;
     }
 
     private boolean doesCustomerExist(String customerEmail) {
         return (database_access_customer.findCustomer(customerEmail));
     }
 
-    private void customerMakesPurchase() {
+    public int customerMakesPurchase() {
        // need to pass current date & current time probs using LocalDate
         LocalDate orderDate = LocalDate.now();
         int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate);
         // using customer id I want to grab all the clothing ids associated with that customer and quantity
-       database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
+       //database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
+
+        return orderReference;
     }
 
 
-    public void addItemsToBasket(int clothingId, int quantity) {
-        database_access_customer.addItemsToBasket(this.customerAccountInfo.getId(), clothingId, quantity);
+    public void addItemsToBasket(String type, String subtype,
+                                 String material, String color,
+                                 String size, int quantity) {
+
+        database_access_customer.addItemsToBasket(type, subtype, material, color, size, quantity,
+                                                 this.customerAccountInfo.getId());
     }
+
+    public void removeItemFromBasket(int clothingId) {
+        database_access_customer.removeItemFromBasket(clothingId);
+    }
+
+    public void addNewCustomerAccount(String firstName,
+                                      String lastName,
+                                      String email,
+                                      String mobile,
+                                      String firstLineBillingAddress,
+                                      String secondLineBillingAddress,
+                                      String billingCityOrTown,
+                                      String billingPostcode,
+                                      String firstLineDeliveryAddress,
+                                      String secondLineDeliveryAddress,
+                                      String deliveryCityOrTown,
+                                      String deliveryPostcode) {
+        boolean customerExists = this.doesCustomerExist(email);
+        if (!customerExists) {
+            int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email, mobile);
+            // add both billing and delivery address
+            this.addNewCustomerAddress(newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
+                    billingCityOrTown, billingPostcode);
+            this.addNewCustomerAddress(newCustomerId, firstLineDeliveryAddress, secondLineDeliveryAddress,
+                    deliveryCityOrTown, deliveryPostcode);
+        } else {
+            // need to throw an error
+            System.out.println("We already have an account with this email address, please try logging in");
+            }
+        }
+
+
+        // use this for when a new customer is being added
+        public void addNewCustomerAddress(int customerId, String firstLineAddress, String secondLineAddress,
+                                          String cityOrTown, String postcode) {
+            database_access_customer.addCustomerAddressToAddressBook(customerId, firstLineAddress, secondLineAddress,
+                                                                     cityOrTown, postcode);
+
+        }
+
+        // use this for when a returning customer has logged in and wants to add another address
+        public void addNewCustomerAddress(String firstLineAddress, String secondLineAddress,
+                                          String cityOrTown, String postcode) {
+
+            database_access_customer.addCustomerAddressToAddressBook(this.customerAccountInfo.getId(), firstLineAddress,
+                                                                     secondLineAddress, cityOrTown, postcode);
+        }
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -89,5 +153,4 @@ public class CustomerService {
 //            throw new IllegalStateException("sorry this customer is not registered with us.");
 //        }
 
-    }
-}
+

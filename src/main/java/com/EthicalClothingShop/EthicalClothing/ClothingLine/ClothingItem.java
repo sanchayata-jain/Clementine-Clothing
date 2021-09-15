@@ -25,6 +25,7 @@ public class ClothingItem {
         this.quantity = quantity;
     }
 
+
     // getter methods
     public int getId() {
         return id;
