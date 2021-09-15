@@ -48,7 +48,7 @@ public class CustomerController {
 
 //    @GetMapping("/logged_in/address_book")
 //    public Quintet<String, String, String, String, String> getCustomerAddressBook() {
-//
+//        customerService.getCustomerAddressBook();
 //    }
 
 //    @PutMapping("/logged_in/address_book/edit_def_deliv_address")
@@ -98,15 +98,20 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{clothingId}")
-    public void customerRemovesItemFromBasket(@PathVariable int clothingId) {
+    public void customerRemovesItemFromBasket(@RequestParam int clothingId) {
         //this will remove item from basket, regardless of quantity
         customerService.removeItemFromBasket(clothingId);
     }
 
     // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
+    @PutMapping("/logged_in/basket")
+    public void customerEditsBasketContents(@RequestParam boolean isIncreasingQuantity,
+                                            @RequestParam int clothingId) {
+        // only edits quantity of items
+        customerService.editItemQuantityInBasket(clothingId, isIncreasingQuantity);
+    }
 
     //method for customer viewing their basket using a @GetMapping
-
 
 }
 

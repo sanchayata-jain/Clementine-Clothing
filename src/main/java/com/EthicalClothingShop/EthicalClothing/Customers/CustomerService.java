@@ -1,9 +1,11 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
+import org.javatuples.Quintet;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 @Service
@@ -18,6 +20,7 @@ public class CustomerService {
     }
 
     public Customer getCustomer() {
+
         return this.customerAccountInfo;
     }
 
@@ -33,7 +36,12 @@ public class CustomerService {
     public int customerMakesPurchase() {
        // need to pass current date & current time probs using LocalDate
         LocalDate orderDate = LocalDate.now();
-        int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate);
+        LocalTime orderTime = LocalTime.now();
+//        if (this.customerAccountInfo == null) {
+//            // throw an error
+//        }
+
+        int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
         // using customer id I want to grab all the clothing ids associated with that customer and quantity
        //database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
 
@@ -51,6 +59,11 @@ public class CustomerService {
 
     public void removeItemFromBasket(int clothingId) {
         database_access_customer.removeItemFromBasket(clothingId);
+    }
+
+    public void editItemQuantityInBasket(int clothingId, boolean isIncreasingQuantity) {
+        database_access_customer.editItemQuantityInBasket(this.customerAccountInfo.getId(),
+                                                          clothingId, isIncreasingQuantity);
     }
 
     public void addNewCustomerAccount(String firstName, String lastName, String email,

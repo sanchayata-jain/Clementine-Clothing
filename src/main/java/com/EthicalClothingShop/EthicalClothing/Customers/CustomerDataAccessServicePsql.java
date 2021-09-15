@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,18 +74,21 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         return (new Customer(customerId, firstName, lastName, emailFromDB, mobile));
     }
 
-    public int createOrderRef(int customerId, LocalDate orderDate) {
-        String addNewOrderRecord = """
-        INSERT INTO orders_information(customer_id, order_date)
-                                              VALUES(?, ?)
-        """;
-        jdbcTemplate.update(addNewOrderRecord, customerId, orderDate);
 
-        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'";
+    public int createOrderRef(int customerId, LocalDate orderDate, LocalTime orderTime) {
+        String addNewOrderRecord = """
+        INSERT INTO orders_information(customer_id, order_date, order_time)
+                                              VALUES(?, ?, ?)
+        """;
+        jdbcTemplate.update(addNewOrderRecord, customerId, orderDate, orderTime);
+
+        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'" +
+                " AND order_date = " + "'" + orderDate + "'" + " AND order_time = " + "'" + orderTime + "'";
         int orderRef = jdbcTemplate.queryForObject(getOrderRefQuery, int.class);
 
         return orderRef;
     }
+
 
 //    public void populateOrderContentsTable(int customerId, int orderRef) {
 //        // creating a table with only  =>>>>>> clothing_id | quantity
@@ -121,11 +125,57 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         int selectedClothingID = jdbcTemplate.queryForObject(getClothingIdQuery, int.class);
 
-        String addItemsToBasketQuery = """
+        // using sql check if selectedClothingID is already in basket_content table
+        String checkIfClothingItemExistsInBasket = "SELECT clothing_id FROM basket_content " +
+                "WHERE clothing_id = " + "" + selectedClothingID + "";
+
+
+        try {
+            int clothingIdInBasket = jdbcTemplate.queryForObject(checkIfClothingItemExistsInBasket, int.class);
+            System.out.println("clothingIdInBasket" + clothingIdInBasket);
+        } catch (Exception e) {
+            System.out.println("went into the catch :(((");
+            String addItemsToBasketQuery = """
                 INSERT INTO basket_content(customer_id, clothing_id, quantity)
                 VALUES(?,?,?)
                 """;
-        jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
+            jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
+        }
+
+
+//        int clothingIdInBasket = jdbcTemplate.queryForObject(checkIfClothingItemExistsInBasket, int.class);
+//        System.out.println("clothingIdInBasket" + clothingIdInBasket);
+//
+//
+//        if (selectedClothingID == clothingIdInBasket) {
+//            System.out.println("increasing quantity");
+//            // record in table found so we will increase quantity of clothing item for that customer
+//            String  increaseQuantity= "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
+//            int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
+//            int newQuantity = currentQuantity + quantity;
+//
+//            String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
+//                    "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
+//            jdbcTemplate.update(updateItemInBasketQuantity);
+//
+//        } else {
+//            System.out.println("updating basket");
+//            String addItemsToBasketQuery = """
+//            INSERT INTO basket_content(customer_id, clothing_id, quantity)
+//            VALUES(?,?,?)
+//            """;
+//            jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
+//        }
+
+        System.out.println("increasing quantity");
+        // record in table found so we will increase quantity of clothing item for that customer
+        String  increaseQuantity= "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
+        int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
+        int newQuantity = currentQuantity + quantity;
+
+        String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
+                "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
+        jdbcTemplate.update(updateItemInBasketQuantity);
 
 
         System.out.println("Selected clothing id : " + selectedClothingID);
@@ -137,12 +187,28 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
     }
 
-//    public void editBasketContent(int clothingId){
-//        String findQuantityOfItemQuery = "SELECT quantity FROM basket_content WHERE " +
-//                "clothing_id = " + "" + clothingId + "";
-//
-//        int quantityOfClothingItemInBasket = jdbcTemplate.queryForObject(findQuantityOfItemQuery, int.class);
-//    }
+
+    public void editItemQuantityInBasket(int customerId, int clothingId, boolean isQuantityIncreasing){
+        String findQuantityOfItemQuery = "SELECT quantity FROM basket_content WHERE " +
+                "clothing_id = " + "" + clothingId + "" + " AND customer_id = " + "" + customerId + "";
+
+        int quantityOfClothingItemInBasket = jdbcTemplate.queryForObject(findQuantityOfItemQuery, int.class);
+
+        int updated_quantity = 0;
+        if (isQuantityIncreasing) {
+            updated_quantity = quantityOfClothingItemInBasket + 1;
+        } else {
+            updated_quantity = quantityOfClothingItemInBasket - 1;
+        }
+
+        //query to update basket table
+        String updateBasketQuery = "UPDATE basket_content SET quantity = " + "" + updated_quantity + "" + " WHERE " +
+                "clothing_id = " + "" + clothingId + "" + " AND customer_id = " + "" + customerId + "";
+
+        jdbcTemplate.update(updateBasketQuery);
+    }
+
+
     public int addCustomerInformation(String firstName, String lastName, String emailAddress, String phoneNumber) {
         String addNewCustomer = """
                     INSERT INTO customer_information(first_name, last_name, email, phone_number)
@@ -174,9 +240,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         jdbcTemplate.update(addItemsToBasketQuery, customerId, firstLineAddress,
                             secondLineAddress, cityOrTown, countyOrState, postcode);
 
-        // use sql query to get address id and make this method return the address id, will be needed for address book,
-        // and for default addresses setting
-
         String getCustomersAddressIdQuery = ("SELECT address_id FROM addresses " +
                 "WHERE customer_id = " + "" + customerId + "" + " AND " +
                 "first_line LIKE " + "'" + firstLineAddress + "'" + " AND " +
@@ -188,6 +251,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return addressId;
     }
+
 
     public void addToCustomerAddressBook(int customerId, int addressId) {
         String insertIntoCustomerAddressBookQuery = """
