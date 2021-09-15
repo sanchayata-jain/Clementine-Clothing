@@ -20,7 +20,6 @@ public class CustomerService {
     }
 
     public Customer getCustomer() {
-
         return this.customerAccountInfo;
     }
 
@@ -40,7 +39,6 @@ public class CustomerService {
 //        if (this.customerAccountInfo == null) {
 //            // throw an error
 //        }
-
         int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
         // using customer id I want to grab all the clothing ids associated with that customer and quantity
        //database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
