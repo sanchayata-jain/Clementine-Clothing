@@ -27,6 +27,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         this.clothingDatabaseAccess = clothingDataAccessServicePsql;
     }
 
+
     public boolean findCustomer(String customerEmail) {
         // checks if customer exists, method returns true if customer exists, if customer doesn't exist method returns false
         boolean customerFound = true;
@@ -41,6 +42,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return customerFound;
     }
+
 
     public Customer getCustomerAccountInfo(String customerEmail) {
         String getCustomerId = "SELECT customer_id FROM customer_information" +
@@ -86,6 +88,11 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 " AND order_date = " + "'" + orderDate + "'" + " AND order_time = " + "'" + orderTime + "'";
         int orderRef = jdbcTemplate.queryForObject(getOrderRefQuery, int.class);
 
+        /*now that an orderRef has been made, meaning the purchase has gone through, we need to empty the
+        customer's basket*/
+        jdbcTemplate.update("DELETE FROM basket_content WHERE " +
+                "customer_id = " + "" + customerId + "");
+
         return orderRef;
     }
 
@@ -105,7 +112,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     // need to remove everything from basket associated with customerId passed to this method
 //
 //    }
-
 
 
 
@@ -134,7 +140,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
             int clothingIdInBasket = jdbcTemplate.queryForObject(checkIfClothingItemExistsInBasket, int.class);
             System.out.println("clothingIdInBasket" + clothingIdInBasket);
         } catch (Exception e) {
-            System.out.println("went into the catch :(((");
             String addItemsToBasketQuery = """
                 INSERT INTO basket_content(customer_id, clothing_id, quantity)
                 VALUES(?,?,?)
@@ -142,32 +147,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
             jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
         }
 
-
-//        int clothingIdInBasket = jdbcTemplate.queryForObject(checkIfClothingItemExistsInBasket, int.class);
-//        System.out.println("clothingIdInBasket" + clothingIdInBasket);
-//
-//
-//        if (selectedClothingID == clothingIdInBasket) {
-//            System.out.println("increasing quantity");
-//            // record in table found so we will increase quantity of clothing item for that customer
-//            String  increaseQuantity= "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
-//            int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
-//            int newQuantity = currentQuantity + quantity;
-//
-//            String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
-//                    "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
-//            jdbcTemplate.update(updateItemInBasketQuantity);
-//
-//        } else {
-//            System.out.println("updating basket");
-//            String addItemsToBasketQuery = """
-//            INSERT INTO basket_content(customer_id, clothing_id, quantity)
-//            VALUES(?,?,?)
-//            """;
-//            jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
-//        }
-
-        System.out.println("increasing quantity");
         // record in table found so we will increase quantity of clothing item for that customer
         String  increaseQuantity= "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
         int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
@@ -176,10 +155,8 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
                 "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
         jdbcTemplate.update(updateItemInBasketQuantity);
-
-
-        System.out.println("Selected clothing id : " + selectedClothingID);
     }
+
 
     public void removeItemFromBasket(int clothingId) {
         jdbcTemplate.update("DELETE FROM basket_content WHERE " +
@@ -198,7 +175,9 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         if (isQuantityIncreasing) {
             updated_quantity = quantityOfClothingItemInBasket + 1;
         } else {
-            updated_quantity = quantityOfClothingItemInBasket - 1;
+            if (quantityOfClothingItemInBasket > 1) {
+                updated_quantity = quantityOfClothingItemInBasket - 1;
+            }
         }
 
         //query to update basket table
@@ -228,6 +207,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return customerId;
     }
+
 
     public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,
                                                 String cityOrTown, String countyOrState, String postcode) {
@@ -261,6 +241,14 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         jdbcTemplate.update(insertIntoCustomerAddressBookQuery, customerId, addressId);
     }
 
+    public void getCustomerAddressBook(int customerId) {
+       String getCustomerAddresses = "SELECT first_line, second_line, city_town, county_state, postcode FROM addresses WHERE " +
+                "customer_id = " + "" + customerId + "";
+
+       //jdbcTemplate.query(getCustomerAddresses);
+    }
+
+
     public void addDefaultDeliveryAddress(int customerId, int addressId) {
         String insertDefaultDeliveryQuery = """
                 INSERT INTO default_delivery_address(customer_id, address_id)
@@ -269,6 +257,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         jdbcTemplate.update(insertDefaultDeliveryQuery, customerId, addressId);
     }
 
+
     public void addDefaultBillingAddress(int customerId, int addressId) {
         String insertDefaultBillingQuery = """
                 INSERT INTO default_billing_address(customer_id, address_id)
@@ -276,9 +265,4 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 """;
         jdbcTemplate.update(insertDefaultBillingQuery, customerId, addressId);
     }
-
-
-
-
-
 }
