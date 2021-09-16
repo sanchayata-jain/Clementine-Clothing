@@ -15,62 +15,59 @@ public class ClothingService {
     }
 
 
-
-    public List<ClothingItem> getClothingItems(String type) {
+    public List<ClothingItem> getClothingItems() {
 
         List<ClothingItem> clothingItems = database_access.getClothingItems();
         ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
+
         boolean requestedTypeFound = false;
         for (ClothingItem clothingItem : clothingItems) {
-            if (type != null && type.length()>0 &&
-                    clothingItem.getType().equals(type)) {
+            clothingItems.add(clothingItem);
+        }
+
+        if (!requestedTypeFound) {
+            throw new IllegalStateException("We do not have this type of clothing");
+        }
+        return clothingItems;
+    }
+
+
+    public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {
+        boolean requestedTypeFound = false;
+        List<ClothingItem> clothingItems = database_access.getClothingItems();
+        ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
+
+        for (ClothingItem clothing : clothingItems) {
+            if (clothing.getType().equals(clothingType)) {
+                clothingItemByType.add(clothing);
                 requestedTypeFound = true;
-                clothingItemByType.add(clothingItem);
             }
         }
+
         if (!requestedTypeFound) {
             throw new IllegalStateException("We do not have this type of clothing");
         }
         return clothingItemByType;
     }
 
-//    public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {
-//        boolean requestedTypeFound = false;
-//        List<ClothingItem> clothingItems = database_access.getClothingItems();
-//        ArrayList<ClothingItem> clothingItemByType = new ArrayList<ClothingItem>();
-//
-//        for (ClothingItem clothing : clothingItems) {
-//            if (clothing.getType().equals(clothingType)) {
-////
-//                clothingItemByType.add(clothing);
-//                requestedTypeFound = true;
-//            }
-//        }
-//
-//        if (!requestedTypeFound) {
-//            throw new IllegalStateException("We do not have this type of clothing");
-//        }
-//        return clothingItemByType;
-//    }
-//
-//
-//    public ClothingItem getOneClothingItem(String clothingName) {
-//
-//        boolean requestedTypeFound = false;
-//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
-//        ClothingItem clothingItem = null;
-//        for (ClothingItem clothing : clothingItems) {
-//            if (clothing.getDescription().equals(clothingName) && !clothing.getIsInStock()) {
-//                clothingItem = clothing;
-//                requestedTypeFound = true;
-//            }
-//        }
-//
-//        if (!requestedTypeFound) {
-//            throw new IllegalStateException("We do not have this type of clothing");
-//        }
-//        return clothingItem;
-//    }
+
+    public ArrayList<ClothingItem> getClothingItemsOfSameSubtype(String clothingSubtype) {
+        boolean requestedTypeFound = false;
+        List<ClothingItem> clothingItems = database_access.getClothingItems();
+        ArrayList<ClothingItem> clothingItemsBySubtype = new ArrayList<ClothingItem>();
+
+        for (ClothingItem clothing : clothingItems) {
+            if (clothing.getType().equals(clothingSubtype)) {
+                clothingItemsBySubtype.add(clothing);
+                requestedTypeFound = true;
+            }
+        }
+
+        if (!requestedTypeFound) {
+            throw new IllegalStateException("We do not have this type of clothing");
+        }
+        return clothingItemsBySubtype;
+    }
 
 
     public void addClothingItem(ClothingItem clothingItem) {
@@ -93,28 +90,45 @@ public class ClothingService {
     }
 
 
-//    public void updateClothingItem(ClothingItem updatedClothingItem) {
+    public void updateClothingItem(double price, int quantity, int clothingItemId) {
+
+        database_access.updateClothingItem(price, quantity, clothingItemId);
 //        List<ClothingItem> clothingItems = database_access.getClothingItems();
 //        boolean requestTypeFound = false;
 //        for (ClothingItem clothingItem :clothingItems) {
-//           if (clothingItem.getId() == updatedClothingItem.getId()) {
+//           if (clothingItem.getId() == clothingItemId) {
 //               requestTypeFound = true;
-//               clothingItem.setPrice(updatedClothingItem.getPrice());
-//               clothingItem.setColor(updatedClothingItem.getColor());
-//               clothingItem.setSize(updatedClothingItem.getSize());
-//               clothingItem.setDescription(updatedClothingItem.getType());
-//               clothingItem.setMaterial(updatedClothingItem.getMaterial());
-
-                 //remove clothingItem from database
-                // add clothingItem to database
-
+//               clothingItem.setPrice(clothingItem.getPrice());
+//               clothingItem.setQuantity(clothingItem.getQuantity());
 //           }
 //        }
-//
 //        if (!requestTypeFound) {
 //            throw new IllegalStateException("we cannot update this item");
 //        }
+    }
+
+
+
+
+
+//    public ClothingItem getOneClothingItem(String clothingName) {
+//
+//        boolean requestedTypeFound = false;
+//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
+//        ClothingItem clothingItem = null;
+//        for (ClothingItem clothing : clothingItems) {
+//            if (clothing.getDescription().equals(clothingName) && !clothing.getIsInStock()) {
+//                clothingItem = clothing;
+//                requestedTypeFound = true;
+//            }
+//        }
+//
+//        if (!requestedTypeFound) {
+//            throw new IllegalStateException("We do not have this type of clothing");
+//        }
+//        return clothingItem;
 //    }
+
 
 
 

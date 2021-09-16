@@ -84,34 +84,53 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         """;
         jdbcTemplate.update(addNewOrderRecord, customerId, orderDate, orderTime);
 
-        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'" +
-                " AND order_date = " + "'" + orderDate + "'" + " AND order_time = " + "'" + orderTime + "'";
+//        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'" +
+//                " AND order_date = " + "'" + orderDate + "'" + " AND order_time = " + "'" + orderTime + "'";
+
+        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = 6 AND order_date = '2021-09-16' AND order_time = '01:03:30.006783'";
         int orderRef = jdbcTemplate.queryForObject(getOrderRefQuery, int.class);
 
-        /*now that an orderRef has been made, meaning the purchase has gone through, we need to empty the
-        customer's basket*/
-        jdbcTemplate.update("DELETE FROM basket_content WHERE " +
-                "customer_id = " + "" + customerId + "");
+        System.out.println("order ID" + orderRef);
 
         return orderRef;
     }
 
 
-//    public void populateOrderContentsTable(int customerId, int orderRef) {
-//        // creating a table with only  =>>>>>> clothing_id | quantity
-//        String getBasketContentQuery = "SELECT clothing_id, quantity " +
-//                                       "FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
-//
-//        //jdbcTemplate.queryForRowSet();
-//
-//        String addNewOrderContent = """
-//        INSERT INTO orders_information(orderRef, clothes_id, quantity)
-//                                              VALUES(?, ?, ?)
-//        """;
-//        jdbcTemplate.update(addNewOrderContent, orderRef, clothesId, quantity);
-    // need to remove everything from basket associated with customerId passed to this method
-//
-//    }
+    public void populateOrderContentsTable(int customerId, int orderRef) {
+        //String getBasketContentClothing = "FOR clothing_id IN " + getBasketContentQuery + " LOOP";
+        String getNumberOfItems = "SELECT COUNT(customer_id) FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
+        int numberOfBasketItems = jdbcTemplate.queryForObject(getNumberOfItems, int.class);
+
+        // creating a table with only  =>>>>>> clothing_id | quantity
+        String getBasketContentQuery = "CREATE TEMP VIEW basket_content_view " +
+                "AS " +
+                "SELECT ROW_NUMBER() OVER() AS num_row, clothing_id, quantity " +
+                "FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
+
+        jdbcTemplate.execute(getBasketContentQuery);
+
+        for (int i = 1; i <= numberOfBasketItems; i++) {
+            String getBasketItemIdQuery = "SELECT clothing_id " +
+                    "FROM basket_content_view WHERE num_row = " + i ;
+
+            String getBasketItemQuantityQuery = "SELECT quantity " +
+                    "FROM basket_content_view WHERE num_row = " + i ;
+
+            int clothingId = jdbcTemplate.queryForObject(getBasketItemIdQuery, int.class);
+            int quantity = jdbcTemplate.queryForObject(getBasketItemQuantityQuery, int.class);
+
+            String addNewOrderContent = """
+            INSERT INTO order_contents(order_id, clothing_id, quantity)
+                                                  VALUES(?, ?, ?)
+            """;
+            jdbcTemplate.update(addNewOrderContent, orderRef, clothingId, quantity);
+        }
+
+//     need to remove everything from basket associated with customerId passed to this method
+        jdbcTemplate.update("DELETE FROM basket_content WHERE " +
+                "customer_id = " + "" + customerId + "");
+
+    }
 
 
 
@@ -212,12 +231,13 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,
                                                 String cityOrTown, String countyOrState, String postcode) {
 
-        String addItemsToBasketQuery = """
-                INSERT INTO basket_content(customer_id, first_line, second_line, city_town, county_state, postcode)
+        System.out.print(customerId);
+        String addAddress = """
+                INSERT INTO addresses(customer_id, first_line, second_line, city_town, county_state, postcode)
                 VALUES(?,?,?,?,?,?)
                 """;
 
-        jdbcTemplate.update(addItemsToBasketQuery, customerId, firstLineAddress,
+        jdbcTemplate.update(addAddress, customerId, firstLineAddress,
                             secondLineAddress, cityOrTown, countyOrState, postcode);
 
         String getCustomersAddressIdQuery = ("SELECT address_id FROM addresses " +
@@ -241,12 +261,12 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         jdbcTemplate.update(insertIntoCustomerAddressBookQuery, customerId, addressId);
     }
 
-    public void getCustomerAddressBook(int customerId) {
-       String getCustomerAddresses = "SELECT first_line, second_line, city_town, county_state, postcode FROM addresses WHERE " +
-                "customer_id = " + "" + customerId + "";
-
-       //jdbcTemplate.query(getCustomerAddresses);
-    }
+//    public void getCustomerAddressBook(int customerId) {
+//       String getCustomerAddresses = "SELECT first_line, second_line, city_town, county_state, postcode FROM addresses WHERE " +
+//                "customer_id = " + "" + customerId + "";
+//
+//       //jdbcTemplate.query(getCustomerAddresses);
+//    }
 
 
     public void addDefaultDeliveryAddress(int customerId, int addressId) {

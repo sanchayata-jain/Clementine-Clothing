@@ -1,5 +1,6 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -11,17 +12,18 @@ import java.util.List;
 
 
 @Repository
-public class ClothingDataAccessServicePsql implements ClothingDAO{
+public class ClothingDataAccessServicePsql implements ClothingDAO {
 
     private JdbcTemplate jdbcTemplate;
 
     // constructor
+    @Autowired
     public ClothingDataAccessServicePsql(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //methods
 
+    //methods
     public void createClothingInventoryViewTable() {
         String dropViewTableQuery = """
                 DROP VIEW IF EXISTS clothing_inventory;
@@ -107,16 +109,23 @@ public class ClothingDataAccessServicePsql implements ClothingDAO{
                                         clothingItem.getPrice());
     }
 
+
     @Override
     public void removeClothingItem(ClothingItem clothingItem) {
         jdbcTemplate.update("DELETE FROM clothing_items_inventory WHERE clothing_id = " + clothingItem.getId());
     }
 
-//    public void removeClothingItemBySize(String clothingItemSize) {
-//        size_id_to_remove = "SELECT size_id FROM sizes WHERE size_name LIKE 'xxs'";
-//        "SELECT * FROM clothing_items_inventory WHERE size_id LIKE size_id_to_remove";
-//
-//    }
 
+    public void updateClothingItem(double price, int quantity, int clothingId) {
 
+        String updateClothingItemQuantity = "UPDATE clothing_items_inventory SET quantity = " + "" + quantity + "" + " WHERE " +
+                "clothing_id = " + "" + clothingId + "";
+
+        jdbcTemplate.update(updateClothingItemQuantity);
+
+        String updateClothingItemPrice = "UPDATE clothing_items_inventory SET price = " + "" + price + "" + " WHERE " +
+                "clothing_id = " + "" + clothingId + "";
+
+        jdbcTemplate.update(updateClothingItemPrice);
+    }
 }

@@ -83,7 +83,10 @@ public class CustomerController {
 
     @GetMapping("/makePurchase")
     public int customerWantsOrderReference() {
-        return (customerService.customerMakesPurchase());
+        int orderId = customerService.customerMakesPurchase();
+        System.out.println("order ID" + orderId);
+        return orderId;
+        //return (customerService.customerMakesPurchase());
     }
 
     @PostMapping("/{type}-{subtype}-{material}")

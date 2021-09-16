@@ -41,7 +41,7 @@ public class CustomerService {
 //        }
         int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
         // using customer id I want to grab all the clothing ids associated with that customer and quantity
-       //database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
+        database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
 
         return orderReference;
     }
@@ -74,6 +74,9 @@ public class CustomerService {
         boolean customerExists = this.doesCustomerExist(email);
         if (!customerExists) {
             int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email, mobile);
+            System.out.println("In addNewCustomerAccount service");
+            System.out.println(newCustomerId);
+            System.out.println();
             // add both billing and delivery address
             this.addNewCustomerAddresses(newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
                                         billingCityOrTown, billingCountyOrState, billingPostcode,

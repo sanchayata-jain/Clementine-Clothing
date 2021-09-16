@@ -60,7 +60,7 @@ public class ClothingItem {
     }
 
     // setter methods
-
+    public void setQuantity(int quantity) { this.quantity = quantity;}
 
     public void setId(int id) {
         this.id = id;
