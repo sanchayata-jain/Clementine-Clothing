@@ -108,26 +108,22 @@ public class ClothingService {
     }
 
 
+    public ClothingItem getClothingItemUsingId(int clothingId) {
 
-
-
-//    public ClothingItem getOneClothingItem(String clothingName) {
-//
-//        boolean requestedTypeFound = false;
-//        ArrayList<ClothingItem> clothingItems = database_access.getClothingItems();
-//        ClothingItem clothingItem = null;
-//        for (ClothingItem clothing : clothingItems) {
-//            if (clothing.getDescription().equals(clothingName) && !clothing.getIsInStock()) {
-//                clothingItem = clothing;
-//                requestedTypeFound = true;
-//            }
-//        }
-//
-//        if (!requestedTypeFound) {
-//            throw new IllegalStateException("We do not have this type of clothing");
-//        }
-//        return clothingItem;
-//    }
+        boolean requestedTypeFound = false;
+        List<ClothingItem> clothingItems = database_access.getClothingItems();
+        ClothingItem clothingItem = null;
+        for (ClothingItem clothing : clothingItems) {
+            if (clothing.getId() == clothingId) {
+                clothingItem = clothing;
+                requestedTypeFound = true;
+            }
+        }
+        if (!requestedTypeFound) {
+            throw new IllegalStateException("We do not have this type of clothing");
+        }
+        return clothingItem;
+    }
 
 
 

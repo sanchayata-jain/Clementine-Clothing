@@ -3,28 +3,33 @@ package com.EthicalClothingShop.EthicalClothing.Customers;
 
 import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingDataAccessServicePsql;
 import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingItem;
+import org.javatuples.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigInteger;
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
+
 
 @Repository
 public class CustomerDataAccessServicePsql implements CustomerDAO{
     ClothingDataAccessServicePsql clothingDatabaseAccess; //= new ClothingDataAccessServicePsql();
     private JdbcTemplate jdbcTemplate;
+//    private final CustomerDAO customerDAO;
 
     // constructor
     public CustomerDataAccessServicePsql(JdbcTemplate jdbcTemplate,
                                          ClothingDataAccessServicePsql clothingDataAccessServicePsql) {
         this.jdbcTemplate = jdbcTemplate;
         this.clothingDatabaseAccess = clothingDataAccessServicePsql;
+//        this.customerDAO = customerDAO;
     }
 
 
@@ -72,8 +77,9 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         } catch (Exception e) {
             System.out.println("uh oh");
         }
-
-        return (new Customer(customerId, firstName, lastName, emailFromDB, mobile));
+        Customer customerInfo = new Customer(customerId, firstName, lastName, emailFromDB, mobile);
+        return customerInfo;
+        //return customerDAO.getCustomerAccountInfo(customerEmail);
     }
 
 
@@ -87,7 +93,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 //        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'" +
 //                " AND order_date = " + "'" + orderDate + "'" + " AND order_time = " + "'" + orderTime + "'";
 
-        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = 6 AND order_date = '2021-09-16' AND order_time = '01:03:30.006783'";
+        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + customerId + " AND order_date = '" + orderDate + "' AND order_time = '" + orderTime + "'";
         int orderRef = jdbcTemplate.queryForObject(getOrderRefQuery, int.class);
 
         System.out.println("order ID" + orderRef);
@@ -124,6 +130,14 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                                                   VALUES(?, ?, ?)
             """;
             jdbcTemplate.update(addNewOrderContent, orderRef, clothingId, quantity);
+
+            String getInventoryStock = "SELECT quantity FROM clothing_items_inventory WHERE clothing_id = " + "" + clothingId + "";
+            int currentClothingItemStock = jdbcTemplate.queryForObject(getInventoryStock, int.class);
+            int newStock = currentClothingItemStock - quantity;
+
+            String updateInventoryStock = "UPDATE clothing_items_inventory SET quantity = " + "" + newStock + "" + " WHERE " +
+                    "clothing_id = " + "" + clothingId + "";
+            jdbcTemplate.update(updateInventoryStock);
         }
 
 //     need to remove everything from basket associated with customerId passed to this method
@@ -154,26 +168,27 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         String checkIfClothingItemExistsInBasket = "SELECT clothing_id FROM basket_content " +
                 "WHERE clothing_id = " + "" + selectedClothingID + "";
 
-
+        boolean itemFoundInBasket = true;
         try {
             int clothingIdInBasket = jdbcTemplate.queryForObject(checkIfClothingItemExistsInBasket, int.class);
-            System.out.println("clothingIdInBasket" + clothingIdInBasket);
         } catch (Exception e) {
+            itemFoundInBasket = false;
             String addItemsToBasketQuery = """
                 INSERT INTO basket_content(customer_id, clothing_id, quantity)
                 VALUES(?,?,?)
                 """;
             jdbcTemplate.update(addItemsToBasketQuery, customerId, selectedClothingID, quantity);
         }
+        if (itemFoundInBasket) {
+            // record in table found so we will increase quantity of clothing item for that customer
+            String increaseQuantity = "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
+            int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
+            int newQuantity = currentQuantity + quantity;
 
-        // record in table found so we will increase quantity of clothing item for that customer
-        String  increaseQuantity= "SELECT quantity FROM basket_content " + "WHERE clothing_id = " + "" + selectedClothingID + "" + " AND customer_id = " + "" + customerId + "";
-        int currentQuantity = jdbcTemplate.queryForObject(increaseQuantity, int.class);
-        int newQuantity = currentQuantity + quantity;
-
-        String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
-                "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
-        jdbcTemplate.update(updateItemInBasketQuantity);
+            String updateItemInBasketQuantity = "UPDATE basket_content SET quantity = " + "" + newQuantity + "" + " WHERE " +
+                    "clothing_id = " + "" + selectedClothingID + "" + "" + " AND customer_id = " + "" + customerId + "";
+            jdbcTemplate.update(updateItemInBasketQuantity);
+        }
     }
 
 
@@ -198,13 +213,40 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 updated_quantity = quantityOfClothingItemInBasket - 1;
             }
         }
-
         //query to update basket table
         String updateBasketQuery = "UPDATE basket_content SET quantity = " + "" + updated_quantity + "" + " WHERE " +
                 "clothing_id = " + "" + clothingId + "" + " AND customer_id = " + "" + customerId + "";
-
         jdbcTemplate.update(updateBasketQuery);
     }
+
+
+
+    public ArrayList getBasketItems(int customerId) {
+        String getNumberOfItems = "SELECT COUNT(customer_id) FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
+        int numberOfBasketItems = jdbcTemplate.queryForObject(getNumberOfItems, int.class);
+
+        String getBasketItemsQuery = "CREATE TEMP VIEW basket_items_view " +
+                "AS " +
+                "SELECT ROW_NUMBER() OVER() AS num_row, clothing_id, quantity FROM basket_content" +
+                " WHERE customer_id = " + customerId;
+         jdbcTemplate.execute(getBasketItemsQuery);
+
+         ArrayList<Pair<Integer, Integer>> basketItems= new ArrayList<Pair<Integer, Integer>>();
+         for (int i = 1; i <= numberOfBasketItems; i++) {
+             String getBasketItemIdQuery = "SELECT clothing_id " +
+                     "FROM basket_items_view WHERE num_row = " + i ;
+
+             String getBasketItemQuantityQuery = "SELECT quantity " +
+                     "FROM basket_items_view WHERE num_row = " + i ;
+
+             int clothingId = jdbcTemplate.queryForObject(getBasketItemIdQuery, int.class);
+             int quantity = jdbcTemplate.queryForObject(getBasketItemQuantityQuery, int.class);
+             Pair<Integer, Integer> basketIdAndQuantity = new Pair<Integer, Integer>(clothingId, quantity);
+             basketItems.add(basketIdAndQuantity);
+         }
+         return basketItems;
+    }
+
 
 
     public int addCustomerInformation(String firstName, String lastName, String emailAddress, String phoneNumber) {

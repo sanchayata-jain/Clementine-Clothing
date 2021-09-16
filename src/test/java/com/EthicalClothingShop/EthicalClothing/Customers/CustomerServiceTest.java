@@ -10,8 +10,10 @@ import org.mockito.Mockito;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
 class CustomerServiceTest {
+
     @Mock
     private CustomerDataAccessServicePsql database_access;
 
@@ -30,6 +32,27 @@ class CustomerServiceTest {
 
         assertEquals(expected, actual); //then
     }
+
+//    void setCustomerAccountInfo() {
+//        //given
+//        String email = "KatieKeane@gmail.com";
+//        Customer customer1 = new Customer(1, "Louise", "Tonkin", "Hello@hotmail.com", "09857329");
+//        given(database_access.getCustomerAccountInfo(email)).willReturn(customer1);
+//
+//        //When
+//
+//        underTest.setCustomer(email);
+
+}
+
+
+
+
+
+
+
+
+
 
 //    @ParameterizedTest()
 //    @ValueSource(strings = {"sanchayatajain@gmail.com"})
@@ -51,4 +74,4 @@ class CustomerServiceTest {
 //    }
 
 
-}
+//}

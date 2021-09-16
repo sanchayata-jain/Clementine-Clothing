@@ -1,17 +1,30 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
+import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingItem;
+import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingService;
+import org.javatuples.Pair;
 import org.javatuples.Quintet;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 
 @Service
 public class CustomerService {
     private CustomerDataAccessServicePsql database_access_customer;
     private Customer customerAccountInfo;
+    private ClothingService clothingService;
+
+    // constructor
+    public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql,
+                           ClothingService clothingService) {
+        this.database_access_customer = customerDataAccessServicePsql;
+        this.customerAccountInfo = null;
+        this.clothingService = clothingService;
+    }
 
     // constructor
     public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
@@ -62,6 +75,20 @@ public class CustomerService {
     public void editItemQuantityInBasket(int clothingId, boolean isIncreasingQuantity) {
         database_access_customer.editItemQuantityInBasket(this.customerAccountInfo.getId(),
                                                           clothingId, isIncreasingQuantity);
+    }
+
+    public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
+        ArrayList<Pair<Integer, Integer>> basketItemsIdQuantity = database_access_customer.getBasketItems(this.customerAccountInfo.getId());
+        ArrayList<Pair<ClothingItem, Integer>> basketContents = new ArrayList<Pair<ClothingItem, Integer>>();
+        for (Pair<Integer, Integer> idAndQuantity : basketItemsIdQuantity) {
+            int clothingId = idAndQuantity.getValue0();
+            int quantityOfClothingItem = idAndQuantity.getValue1();
+            ClothingItem clothingItem = clothingService.getClothingItemUsingId(clothingId); // not finished
+            Pair<ClothingItem, Integer> basketItem = new Pair<ClothingItem, Integer>(clothingItem, quantityOfClothingItem);
+            basketContents.add(basketItem);
+        }
+
+        return basketContents;
     }
 
     public void addNewCustomerAccount(String firstName, String lastName, String email,

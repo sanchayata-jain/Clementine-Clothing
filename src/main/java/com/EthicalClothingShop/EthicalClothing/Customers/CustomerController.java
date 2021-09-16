@@ -1,8 +1,12 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
+import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingItem;
+import org.javatuples.Pair;
 import org.javatuples.Quartet;
 import org.javatuples.Quintet;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(path="api/customers")
@@ -115,6 +119,10 @@ public class CustomerController {
     }
 
     //method for customer viewing their basket using a @GetMapping
+    @GetMapping("/logged_in/basket")
+    public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
+        return(customerService.getCustomerBasketContent());
+    }
 
 }
 
