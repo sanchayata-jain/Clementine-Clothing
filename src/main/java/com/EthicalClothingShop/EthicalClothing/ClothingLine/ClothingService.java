@@ -124,8 +124,4 @@ public class ClothingService {
         }
         return clothingItem;
     }
-
-
-
-
 }

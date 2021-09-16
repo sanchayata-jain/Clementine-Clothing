@@ -2,17 +2,10 @@ package com.EthicalClothingShop.EthicalClothing.Customers;
 
 
 import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingDataAccessServicePsql;
-import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingItem;
 import org.javatuples.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import java.math.BigInteger;
-import java.sql.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -106,6 +99,11 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         //String getBasketContentClothing = "FOR clothing_id IN " + getBasketContentQuery + " LOOP";
         String getNumberOfItems = "SELECT COUNT(customer_id) FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
         int numberOfBasketItems = jdbcTemplate.queryForObject(getNumberOfItems, int.class);
+
+        String dropViewTableQuery = """
+                DROP VIEW IF EXISTS basket_content_view;
+                """;
+        jdbcTemplate.execute(dropViewTableQuery);
 
         // creating a table with only  =>>>>>> clothing_id | quantity
         String getBasketContentQuery = "CREATE TEMP VIEW basket_content_view " +
@@ -224,6 +222,11 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     public ArrayList getBasketItems(int customerId) {
         String getNumberOfItems = "SELECT COUNT(customer_id) FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
         int numberOfBasketItems = jdbcTemplate.queryForObject(getNumberOfItems, int.class);
+
+        String dropViewTableQuery = """
+                DROP VIEW IF EXISTS basket_items_view;
+                """;
+        jdbcTemplate.execute(dropViewTableQuery);
 
         String getBasketItemsQuery = "CREATE TEMP VIEW basket_items_view " +
                 "AS " +

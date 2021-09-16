@@ -11,7 +11,6 @@ public class ClothingController {
 
     // Constructor
     public ClothingController(ClothingService clothingService) {
-
         this.clothingService = clothingService;
     }
 

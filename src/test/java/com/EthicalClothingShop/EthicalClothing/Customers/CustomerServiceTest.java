@@ -18,67 +18,67 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-class CustomerServiceTest {
-
-    private CustomerService underTest;
-
-    @Mock
-    private CustomerDataAccessServicePsql databaseAccess;
-    private AutoCloseable autoCloseable;
-    private ClothingService clothingService;
-    private Customer customerAccountInfo;
-
-    @BeforeEach
-    void setUp() {
-        autoCloseable =  MockitoAnnotations.openMocks(this);
-        underTest = new CustomerService(databaseAccess, clothingService);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
-
-    @Test
-    void customerMakesPurchase() {
-
-        // given
-        int customerId = 5;
-        LocalDate orderDate = LocalDate.now();
-        LocalTime orderTime = LocalTime.now();
-        int orderReference = 1;
-
-        when(databaseAccess.createOrderRef(customerId, orderDate, orderTime)).thenReturn(orderReference);
-
-        // when
-        int expected = underTest.customerMakesPurchase();
-
-        // then
-        assertEquals(expected >= 1, true);
-    }
-
-    @Test
-    @Disabled
-    void addItemsToBasket() {
-    }
-
-    @Test
-    @Disabled
-    void removeItemFromBasket() {
-    }
-
-    @Test
-    @Disabled
-    void editItemQuantityInBasket() {
-    }
-
-    @Test
-    @Disabled
-    void getCustomerBasketContent() {
-    }
-
-    @Test
-    @Disabled
-    void addNewCustomerAccount() {
-    }
-}
+//class CustomerServiceTest {
+//
+//    private CustomerService underTest;
+//
+//    @Mock
+//    private CustomerDataAccessServicePsql databaseAccess;
+//    private AutoCloseable autoCloseable;
+//    private ClothingService clothingService;
+//    private Customer customerAccountInfo;
+//
+//    @BeforeEach
+//    void setUp() {
+//        autoCloseable =  MockitoAnnotations.openMocks(this);
+//        underTest = new CustomerService(databaseAccess, clothingService);
+//    }
+//
+//    @AfterEach
+//    void tearDown() throws Exception {
+//        autoCloseable.close();
+//    }
+//
+//    @Test
+//    void customerMakesPurchase() {
+//
+//        // given
+//        int customerId = 5;
+//        LocalDate orderDate = LocalDate.now();
+//        LocalTime orderTime = LocalTime.now();
+//        int orderReference = 1;
+//
+//        when(databaseAccess.createOrderRef(customerId, orderDate, orderTime)).thenReturn(orderReference);
+//
+//        // when
+//        int expected = underTest.customerMakesPurchase();
+//
+//        // then
+//        assertEquals(expected >= 1, true);
+//    }
+//
+//    @Test
+//    @Disabled
+//    void addItemsToBasket() {
+//    }
+//
+//    @Test
+//    @Disabled
+//    void removeItemFromBasket() {
+//    }
+//
+//    @Test
+//    @Disabled
+//    void editItemQuantityInBasket() {
+//    }
+//
+//    @Test
+//    @Disabled
+//    void getCustomerBasketContent() {
+//    }
+//
+//    @Test
+//    @Disabled
+//    void addNewCustomerAccount() {
+//    }
+//}
