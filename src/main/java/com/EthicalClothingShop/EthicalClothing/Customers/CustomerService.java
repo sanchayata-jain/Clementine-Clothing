@@ -18,6 +18,17 @@ public class CustomerService {
     private Customer customerAccountInfo;
     private ClothingService clothingService;
 
+//    public CustomerService() {
+//        //default constructor
+//    }
+
+
+    //    // constructor
+//    public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
+//        this.database_access_customer = customerDataAccessServicePsql;
+//        this.customerAccountInfo = null;
+//    }
+
     // constructor
     public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql,
                            ClothingService clothingService) {
@@ -26,24 +37,29 @@ public class CustomerService {
         this.clothingService = clothingService;
     }
 
-    // constructor
-    public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
-        this.database_access_customer = customerDataAccessServicePsql;
-        this.customerAccountInfo = null;
-    }
 
     public Customer getCustomer() {
         return this.customerAccountInfo;
     }
 
-    public void setCustomer(String email) {
-        Customer customerAccountInfo = database_access_customer.getCustomerAccountInfo(email);
-        this.customerAccountInfo = customerAccountInfo;
+
+
+
+    public void setCustomer(Customer customer) {
+        this.customerAccountInfo = customer;
     }
+
+    public Customer findCustomer(String email) {
+        return database_access_customer.getCustomerAccountInfo(email);
+    }
+
 
     private boolean doesCustomerExist(String customerEmail) {
         return (database_access_customer.findCustomer(customerEmail));
     }
+
+
+
 
     public int customerMakesPurchase() {
        // need to pass current date & current time probs using LocalDate
@@ -58,6 +74,9 @@ public class CustomerService {
 
         return orderReference;
     }
+
+
+
 
 
     public void addItemsToBasket(String type, String subtype,
@@ -76,6 +95,7 @@ public class CustomerService {
         database_access_customer.editItemQuantityInBasket(this.customerAccountInfo.getId(),
                                                           clothingId, isIncreasingQuantity);
     }
+
 
     public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
         ArrayList<Pair<Integer, Integer>> basketItemsIdQuantity = database_access_customer.getBasketItems(this.customerAccountInfo.getId());

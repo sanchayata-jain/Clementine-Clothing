@@ -1,77 +1,84 @@
 package com.EthicalClothingShop.EthicalClothing.Customers;
 
+import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingService;
+import org.apache.tomcat.jni.Local;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 class CustomerServiceTest {
 
-    @Mock
-    private CustomerDataAccessServicePsql database_access;
-
     private CustomerService underTest;
+
+    @Mock
+    private CustomerDataAccessServicePsql databaseAccess;
+    private AutoCloseable autoCloseable;
+    private ClothingService clothingService;
+    private Customer customerAccountInfo;
 
     @BeforeEach
     void setUp() {
-        underTest = new CustomerService(database_access);
+        autoCloseable =  MockitoAnnotations.openMocks(this);
+        underTest = new CustomerService(databaseAccess, clothingService);
     }
 
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
 
     @Test
-    void getCustomerShouldBeNull() {
-        Customer actual = underTest.getCustomer(); //given
-        Customer expected = null; //when
+    void customerMakesPurchase() {
 
-        assertEquals(expected, actual); //then
+        // given
+        int customerId = 5;
+        LocalDate orderDate = LocalDate.now();
+        LocalTime orderTime = LocalTime.now();
+        int orderReference = 1;
+
+        when(databaseAccess.createOrderRef(customerId, orderDate, orderTime)).thenReturn(orderReference);
+
+        // when
+        int expected = underTest.customerMakesPurchase();
+
+        // then
+        assertEquals(expected >= 1, true);
     }
 
-//    void setCustomerAccountInfo() {
-//        //given
-//        String email = "KatieKeane@gmail.com";
-//        Customer customer1 = new Customer(1, "Louise", "Tonkin", "Hello@hotmail.com", "09857329");
-//        given(database_access.getCustomerAccountInfo(email)).willReturn(customer1);
-//
-//        //When
-//
-//        underTest.setCustomer(email);
+    @Test
+    @Disabled
+    void addItemsToBasket() {
+    }
 
+    @Test
+    @Disabled
+    void removeItemFromBasket() {
+    }
+
+    @Test
+    @Disabled
+    void editItemQuantityInBasket() {
+    }
+
+    @Test
+    @Disabled
+    void getCustomerBasketContent() {
+    }
+
+    @Test
+    @Disabled
+    void addNewCustomerAccount() {
+    }
 }
-
-
-
-
-
-
-
-
-
-
-//    @ParameterizedTest()
-//    @ValueSource(strings = {"sanchayatajain@gmail.com"})
-//    void setCustomerSoCustomerAccountInfoShouldNotBeNull(String email) {
-//        CustomerDataAccessServicePsql customerData= Mockito.mock(CustomerDataAccessServicePsql.class);
-//
-//
-//      Mockito.when(customerData.getCustomerAccountInfo(email).thenReturn(
-//                                                                          new Customer(1,
-//                                                                          "Louise",
-//                                                                          "Tonkin",
-//                                                                           email,
-//                                                                           "07943134865"
-//                                                                          )));
-//
-//
-//
-//
-//    }
-
-
-//}

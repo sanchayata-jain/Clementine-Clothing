@@ -65,7 +65,8 @@ public class CustomerController {
     // @PostMapping customer logs in method @RequestParam email, password (return bool if all okay or not)
     @PostMapping("/logged_in")
     public void customerWantsToLogIn(@RequestParam String email) {
-        customerService.setCustomer(email);
+        Customer customerAccount = customerService.findCustomer(email);
+        customerService.setCustomer(customerAccount);
     }
 
     @GetMapping("/logged_in/account_details")
