@@ -46,11 +46,12 @@ public class CustomerService {
 
 
     public void setCustomer(Customer customer) {
+
         this.customerAccountInfo = customer;
     }
 
-    public Customer findCustomer(String email) {
-        return database_access_customer.getCustomerAccountInfo(email);
+    public Customer findCustomer(String email, String password) {
+        return database_access_customer.getCustomerAccountInfo(email, password);
     }
 
 
@@ -61,14 +62,20 @@ public class CustomerService {
 
 
 
-    public int customerMakesPurchase() {
+    public int customerMakesPurchase() throws Exception {
        // need to pass current date & current time probs using LocalDate
         LocalDate orderDate = LocalDate.now();
         LocalTime orderTime = LocalTime.now();
 //        if (this.customerAccountInfo == null) {
 //            // throw an error
 //        }
-        int orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
+        int orderReference = 0;
+        try {
+            orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
+        } catch(Exception e) {
+            throw e;
+        }
+
         // using customer id I want to grab all the clothing ids associated with that customer and quantity
         database_access_customer.populateOrderContentsTable(this.customerAccountInfo.getId(), orderReference);
 
@@ -116,11 +123,13 @@ public class CustomerService {
                                       String billingCityOrTown, String billingCountyOrState, String billingPostcode,
                                       String firstLineDeliveryAddress, String secondLineDeliveryAddress,
                                       String deliveryCityOrTown, String deliveryCountyOrState,
-                                      String deliveryPostcode) {
+                                      String deliveryPostcode, String password) throws Exception {
 
         boolean customerExists = this.doesCustomerExist(email);
         if (!customerExists) {
-            int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email, mobile);
+            int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email,
+                                                                                mobile, password);
+
             System.out.println("In addNewCustomerAccount service");
             System.out.println(newCustomerId);
             System.out.println();
@@ -130,8 +139,8 @@ public class CustomerService {
                                         firstLineDeliveryAddress, secondLineDeliveryAddress,
                                         deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode);
         } else {
-            // need to throw an error
-            System.out.println("We already have an account with this email address, please try logging in");
+
+            throw new Exception("We already have an account with this email address, please try logging in");
             }
         }
 

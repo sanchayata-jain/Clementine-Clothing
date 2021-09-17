@@ -3,8 +3,9 @@ package com.EthicalClothingShop.EthicalClothing.Customers;
 import com.EthicalClothingShop.EthicalClothing.ClothingLine.ClothingItem;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
-import org.javatuples.Quintet;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    //method for adding a new customer @PostMapping and require Params from customer
+    // methods
     @PostMapping("/create_account")
     public void addNewCustomer(@RequestParam String firstName,
                                @RequestParam String lastName,
@@ -33,12 +34,17 @@ public class CustomerController {
                                @RequestParam (required = false) String secondLineDeliveryAddress,
                                @RequestParam String deliveryCityOrTown,
                                @RequestParam String deliveryCountyOrState,
-                               @RequestParam String deliveryPostcode) {
-
-        customerService.addNewCustomerAccount(firstName, lastName, email,
-                       mobile, firstLineBillingAddress, secondLineBillingAddress,
-                       billingCityOrTown, billingCountyOrState, billingPostcode, firstLineDeliveryAddress,
-                       secondLineDeliveryAddress, deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode);
+                               @RequestParam String deliveryPostcode,
+                               @RequestParam String password) {
+        try {
+            customerService.addNewCustomerAccount(firstName, lastName, email,
+                    mobile, firstLineBillingAddress, secondLineBillingAddress,
+                    billingCityOrTown, billingCountyOrState, billingPostcode, firstLineDeliveryAddress,
+                    secondLineDeliveryAddress, deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode, password);
+        } catch(Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @PostMapping("/logged_in/add_new_address")
@@ -50,22 +56,11 @@ public class CustomerController {
         customerService.addCustomerAddress(firstLineAddress, secondLineAddress, cityOrTown, countyOrState, postcode);
     }
 
-//    @GetMapping("/logged_in/address_book")
-//    public Quintet<String, String, String, String, String> getCustomerAddressBook() {
-//        customerService.getCustomerAddressBook();
-//    }
 
-//    @PutMapping("/logged_in/address_book/edit_def_deliv_address")
-//
-//    @PutMapping("/logged_in/address_book/edit_def_bill_address")
-
-
-
-
-    // @PostMapping customer logs in method @RequestParam email, password (return bool if all okay or not)
     @PostMapping("/logged_in")
-    public void customerWantsToLogIn(@RequestParam String email) {
-        Customer customerAccount = customerService.findCustomer(email);
+    public void customerWantsToLogIn(@RequestParam String email,
+                                     @RequestParam String password) {
+        Customer customerAccount = customerService.findCustomer(email, password);
         customerService.setCustomer(customerAccount);
     }
 
@@ -88,10 +83,14 @@ public class CustomerController {
 
     @GetMapping("/makePurchase")
     public int customerWantsOrderReference() {
-        int orderId = customerService.customerMakesPurchase();
-        System.out.println("order ID" + orderId);
+        int orderId = 0;
+        try {
+            orderId = customerService.customerMakesPurchase();
+        } catch(Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
         return orderId;
-        //return (customerService.customerMakesPurchase());
     }
 
     @PostMapping("/{type}-{subtype}-{material}")
@@ -124,6 +123,21 @@ public class CustomerController {
     public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
         return(customerService.getCustomerBasketContent());
     }
+
+
+
+
+
+
+
+    //    @GetMapping("/logged_in/address_book")
+//    public Quintet<String, String, String, String, String> getCustomerAddressBook() {
+//        customerService.getCustomerAddressBook();
+//    }
+
+//    @PutMapping("/logged_in/address_book/edit_def_deliv_address")
+//
+//    @PutMapping("/logged_in/address_book/edit_def_bill_address")
 
 }
 

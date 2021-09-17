@@ -1,7 +1,11 @@
 package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,7 +19,7 @@ public class ClothingController {
     }
 
     //methods
-    @GetMapping("/exploreRange")
+    @GetMapping("/explore-range")
     public List<ClothingItem> getAllClothingItems() {
         return clothingService.getClothingItems();
     }
@@ -25,9 +29,17 @@ public class ClothingController {
         return clothingService.getClothingItemsOfSameType(type);
     }
 
-    @GetMapping("/{clothingSubtype}")
-    public List<ClothingItem> getClothingItemBySub(@PathVariable("clothingSubtype") String subtype) {
-        return clothingService.getClothingItemsOfSameSubtype(subtype);
+    @GetMapping("/clothing-sub/{clothingSubtype}")
+    public ArrayList<ClothingItem> getClothingItemBySub(@PathVariable("clothingSubtype") String subtype) {
+        ArrayList<ClothingItem> clothingItemsBySubType = new ArrayList<ClothingItem>();
+        try {
+            clothingItemsBySubType = clothingService.getClothingItemsOfSameSubtype(subtype);
+        } catch(Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+
+        return clothingItemsBySubType;
     }
 
     @PostMapping

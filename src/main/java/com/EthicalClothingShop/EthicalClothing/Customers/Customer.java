@@ -29,12 +29,17 @@ public class Customer {
         this.id = id;
     }
 
-    public Customer(int id, String firstName, String lastName, String email, String mobileNumber) {
+    public Customer(int id, String firstName, String lastName, String email, String mobileNumber, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.mobileNumber = mobileNumber;
+        this.password = password;
+    }
+
+    public String getCustomerPassword() {
+        return password;
     }
 
     public String getFirstName() { return firstName; }

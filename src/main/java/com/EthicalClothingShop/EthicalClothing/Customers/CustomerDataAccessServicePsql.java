@@ -42,7 +42,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     }
 
 
-    public Customer getCustomerAccountInfo(String customerEmail) {
+    public Customer getCustomerAccountInfo(String customerEmail, String password) {
         String getCustomerId = "SELECT customer_id FROM customer_information" +
                 " WHERE email LIKE " + "'" + customerEmail + "'";
         String getCustomerFirstName = "SELECT first_name FROM customer_information" +
@@ -53,15 +53,15 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 " WHERE email LIKE " + "'" + customerEmail + "'";
         String getCustomerEmail = "SELECT email FROM customer_information" +
                 " WHERE email LIKE " + "'" + customerEmail + "'";
+        String getCustomerPassword = "SELECT password FROM customer_information" +
+                " WHERE email LIKE " + "'" + customerEmail + "'";
 
         String firstName = jdbcTemplate.queryForObject(getCustomerFirstName, String.class);
-        System.out.println("first name: " + firstName);
         String lastName = jdbcTemplate.queryForObject(getCustomerLastName, String.class);
-        System.out.println("last name: " + lastName);
         String mobile = jdbcTemplate.queryForObject(getCustomerMobile, String.class);
-        System.out.println("mobile: " + mobile);
         String emailFromDB = jdbcTemplate.queryForObject(getCustomerEmail, String.class);
-        System.out.println("email from database: " + emailFromDB);
+        String passwordFromDB = jdbcTemplate.queryForObject(getCustomerPassword, String.class);
+
 
         int customerId = 0;
         try {
@@ -70,17 +70,27 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         } catch (Exception e) {
             System.out.println("uh oh");
         }
-        Customer customerInfo = new Customer(customerId, firstName, lastName, emailFromDB, mobile);
+        Customer customerInfo = new Customer(customerId, firstName, lastName, emailFromDB, mobile, passwordFromDB);
         return customerInfo;
         //return customerDAO.getCustomerAccountInfo(customerEmail);
     }
 
 
-    public int createOrderRef(int customerId, LocalDate orderDate, LocalTime orderTime) {
+    public int createOrderRef(int customerId, LocalDate orderDate, LocalTime orderTime) throws Exception {
+        String ensureCustomerHasItemsInBasket = "SELECT customer_id FROM basket_content WHERE " +
+                "customer_id = " + customerId;
+        try {
+            int customerIdInBasket = jdbcTemplate.queryForObject(ensureCustomerHasItemsInBasket, int.class);
+        } catch(Exception e) {
+            // throw an exception
+            throw new Exception("No items in basket to purchase");
+        }
+
+
         String addNewOrderRecord = """
-        INSERT INTO orders_information(customer_id, order_date, order_time)
-                                              VALUES(?, ?, ?)
-        """;
+    INSERT INTO orders_information(customer_id, order_date, order_time)
+                                          VALUES(?, ?, ?)
+    """;
         jdbcTemplate.update(addNewOrderRecord, customerId, orderDate, orderTime);
 
 //        String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + "'" +  customerId + "'" +
@@ -88,6 +98,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         String getOrderRefQuery = "SELECT order_id FROM orders_information WHERE customer_id = " + customerId + " AND order_date = '" + orderDate + "' AND order_time = '" + orderTime + "'";
         int orderRef = jdbcTemplate.queryForObject(getOrderRefQuery, int.class);
+
 
         System.out.println("order ID" + orderRef);
 
@@ -252,22 +263,19 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
 
 
-    public int addCustomerInformation(String firstName, String lastName, String emailAddress, String phoneNumber) {
+    public int addCustomerInformation(String firstName, String lastName, String emailAddress,
+                                      String phoneNumber, String password) {
+
         String addNewCustomer = """
-                    INSERT INTO customer_information(first_name, last_name, email, phone_number)
-                    VALUES(?,?,?,?)
+                    INSERT INTO customer_information(first_name, last_name, email, phone_number, password)
+                    VALUES(?,?,?,?,?)
                     """;
-        jdbcTemplate.update(addNewCustomer, firstName, lastName, emailAddress, phoneNumber);
+        jdbcTemplate.update(addNewCustomer, firstName, lastName, emailAddress, phoneNumber, password);
 
         String getNewCustomerIDQuery = "SELECT customer_id FROM customer_information WHERE email LIKE " +
                 "'" + emailAddress + "'";
-        int customerId = 0;
-        try {
-            customerId = jdbcTemplate.queryForObject(getNewCustomerIDQuery, int.class);
-        } catch(Exception e) {
-            System.out.println("Sorry we can't make your account currently with this email, please try again later");
-            // need to throw an error here
-        }
+
+        int customerId = jdbcTemplate.queryForObject(getNewCustomerIDQuery, int.class);
 
         return customerId;
     }
