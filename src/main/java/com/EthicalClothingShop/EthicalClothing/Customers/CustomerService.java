@@ -60,8 +60,6 @@ public class CustomerService {
     }
 
 
-
-
     public int customerMakesPurchase() throws Exception {
        // need to pass current date & current time probs using LocalDate
         LocalDate orderDate = LocalDate.now();
@@ -81,8 +79,6 @@ public class CustomerService {
 
         return orderReference;
     }
-
-
 
 
 

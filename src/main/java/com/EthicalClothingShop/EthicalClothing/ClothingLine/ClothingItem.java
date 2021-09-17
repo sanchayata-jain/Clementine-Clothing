@@ -13,7 +13,7 @@ public class ClothingItem {
 
     public ClothingItem(int id, String type, String subtype,
                         String size, String color, String material,
-                        double price, int quantity) {
+                        int quantity, double price) {
 
         this.type = type;
         this.id = id;

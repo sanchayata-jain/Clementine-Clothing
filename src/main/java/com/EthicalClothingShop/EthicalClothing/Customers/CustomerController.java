@@ -47,21 +47,12 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/logged_in/add_new_address")
-    public void addCustomerAddress(@RequestParam String firstLineAddress,
-                                      @RequestParam (required = false) String secondLineAddress,
-                                      @RequestParam String cityOrTown,
-                                      @RequestParam String countyOrState,
-                                      @RequestParam String postcode) {
-        customerService.addCustomerAddress(firstLineAddress, secondLineAddress, cityOrTown, countyOrState, postcode);
-    }
-
-
-    @PostMapping("/logged_in")
-    public void customerWantsToLogIn(@RequestParam String email,
-                                     @RequestParam String password) {
-        Customer customerAccount = customerService.findCustomer(email, password);
-        customerService.setCustomer(customerAccount);
+    // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
+    @PutMapping("/logged_in/basket")
+    public void customerEditsBasketContents(@RequestParam boolean isIncreasingQuantity,
+                                            @RequestParam int clothingId) {
+        // only edits quantity of items
+        customerService.editItemQuantityInBasket(clothingId, isIncreasingQuantity);
     }
 
     @GetMapping("/logged_in/account_details")
@@ -75,11 +66,39 @@ public class CustomerController {
         Customer customerAccountDetails = customerService.getCustomer();
 
         Quartet<String, String, String, String> accountDetails = new Quartet<String, String, String, String>(customerAccountDetails.getFirstName(),
-                                                                               customerAccountDetails.getLastName(),
-                                                                               customerAccountDetails.getEmail(),
-                                                                               customerAccountDetails.getMobileNumber());
+                customerAccountDetails.getLastName(),
+                customerAccountDetails.getEmail(),
+                customerAccountDetails.getMobileNumber());
         return accountDetails;
     }
+
+
+    @DeleteMapping("/{clothingId}")
+    public void customerRemovesItemFromBasket(@RequestParam int clothingId) {
+        //this will remove item from basket, regardless of quantity
+        customerService.removeItemFromBasket(clothingId);
+    }
+
+
+    @PostMapping("/logged_in/add_new_address")
+    public void addCustomerAddress(@RequestParam String firstLineAddress,
+                                      @RequestParam (required = false) String secondLineAddress,
+                                      @RequestParam String cityOrTown,
+                                      @RequestParam String countyOrState,
+                                      @RequestParam String postcode) {
+        customerService.addCustomerAddress(firstLineAddress, secondLineAddress, cityOrTown, countyOrState, postcode);
+    }
+
+
+
+
+    @PostMapping("/logged_in")
+    public void customerWantsToLogIn(@RequestParam String email,
+                                     @RequestParam String password) {
+        Customer customerAccount = customerService.findCustomer(email, password);
+        customerService.setCustomer(customerAccount);
+    }
+
 
     @GetMapping("/makePurchase")
     public int customerWantsOrderReference() {
@@ -93,6 +112,7 @@ public class CustomerController {
         return orderId;
     }
 
+
     @PostMapping("/{type}-{subtype}-{material}")
     public void customerAddsItemToBasket(@PathVariable String type,
                                          @PathVariable String subtype,
@@ -104,19 +124,6 @@ public class CustomerController {
         customerService.addItemsToBasket(type, subtype, material, color, size, quantity);
     }
 
-    @DeleteMapping("/{clothingId}")
-    public void customerRemovesItemFromBasket(@RequestParam int clothingId) {
-        //this will remove item from basket, regardless of quantity
-        customerService.removeItemFromBasket(clothingId);
-    }
-
-    // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
-    @PutMapping("/logged_in/basket")
-    public void customerEditsBasketContents(@RequestParam boolean isIncreasingQuantity,
-                                            @RequestParam int clothingId) {
-        // only edits quantity of items
-        customerService.editItemQuantityInBasket(clothingId, isIncreasingQuantity);
-    }
 
     //method for customer viewing their basket using a @GetMapping
     @GetMapping("/logged_in/basket")
