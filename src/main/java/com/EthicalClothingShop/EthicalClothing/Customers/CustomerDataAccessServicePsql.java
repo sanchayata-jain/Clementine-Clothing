@@ -263,6 +263,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
 
 
+
     public int addCustomerInformation(String firstName, String lastName, String emailAddress,
                                       String phoneNumber, String password) {
 
@@ -279,6 +280,11 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return customerId;
     }
+
+
+
+
+
 
 
     public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,

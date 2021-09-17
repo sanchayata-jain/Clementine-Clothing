@@ -43,7 +43,7 @@ public class CustomerController {
                     secondLineDeliveryAddress, deliveryCityOrTown, deliveryCountyOrState, deliveryPostcode, password);
         } catch(Exception e) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, e.getMessage(), e);
+                    HttpStatus.CONFLICT, e.getMessage(), e);
         }
     }
 
@@ -113,10 +113,10 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/{type}-{subtype}-{material}")
+    @PostMapping("/{type}-{material}")
     public void customerAddsItemToBasket(@PathVariable String type,
-                                         @PathVariable String subtype,
                                          @PathVariable String material,
+                                         @RequestParam String subtype,
                                          @RequestParam String color,
                                          @RequestParam String size,
                                          @RequestParam int quantity) {
