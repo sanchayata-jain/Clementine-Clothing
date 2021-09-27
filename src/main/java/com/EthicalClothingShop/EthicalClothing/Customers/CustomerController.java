@@ -135,7 +135,7 @@ public class CustomerController {
 
 
 
-
+// Didn't have enough time to make all these methods, ask and we can try to build it
 
     //    @GetMapping("/logged_in/address_book")
 //    public Quintet<String, String, String, String, String> getCustomerAddressBook() {

@@ -17,17 +17,7 @@ public class CustomerService {
     private CustomerDataAccessServicePsql database_access_customer;
     private Customer customerAccountInfo;
     private ClothingService clothingService;
-
-//    public CustomerService() {
-//        //default constructor
-//    }
-
-
-    //    // constructor
-//    public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql) {
-//        this.database_access_customer = customerDataAccessServicePsql;
-//        this.customerAccountInfo = null;
-//    }
+    
 
     // constructor
     public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql,

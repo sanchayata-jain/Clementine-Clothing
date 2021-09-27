@@ -2,7 +2,6 @@ package com.EthicalClothingShop.EthicalClothing.ClothingLine;
 
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -60,47 +60,7 @@ public class ClothingItem {
     }
 
     // setter methods
-    public void setQuantity(int quantity) { this.quantity = quantity;}
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-
-    @Override
-    public String toString() {
-        return "ClothingItem{" +
-                "type='" + type + '\'' +
-                ", id=" + id +
-                ", subtype='" + subtype + '\'' +
-                ", color='" + color + '\'' +
-                ", size=" + size +
-                ", material='" + material + '\'' +
-                ", price=" + price +
-                '}';
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        ClothingItem that = (ClothingItem) o;
-//        return id == that.id && size == that.size && inStock == that.inStock && Objects.equals(type, that.type) && Objects.equals(description, that.description) && Objects.equals(color, that.color) && Objects.equals(material, that.material) && Objects.equals(price, that.price);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(type, id, description, color, size, material, price, inStock);
-//    }
-//}
-
-
