@@ -17,7 +17,7 @@ public class CustomerService {
     private CustomerDataAccessServicePsql database_access_customer;
     private Customer customerAccountInfo;
     private ClothingService clothingService;
-    
+
 
     // constructor
     public CustomerService(CustomerDataAccessServicePsql customerDataAccessServicePsql,
@@ -51,7 +51,6 @@ public class CustomerService {
 
 
     public int customerMakesPurchase() throws Exception {
-       // need to pass current date & current time probs using LocalDate
         LocalDate orderDate = LocalDate.now();
         LocalTime orderTime = LocalTime.now();
 //        if (this.customerAccountInfo == null) {

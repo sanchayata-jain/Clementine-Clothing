@@ -1,0 +1,41 @@
+CREATE TABLE materials (
+	material_id serial PRIMARY KEY,
+	material_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE colors (
+	color_id serial PRIMARY KEY,
+	color_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE clothing_types (
+	type_id serial PRIMARY KEY,
+	type_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE clothing_subtypes (
+	subtype_id serial PRIMARY KEY,
+	subtype_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE sizes (
+	size_id serial PRIMARY KEY,
+	size_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE clothing_items_inventory (
+	clothing_id serial,
+	type_id BIGINT NOT NULL,
+	subtype_id BIGINT NOT NULL,
+	size_id BIGINT NOT NULL,
+	color_id BIGINT NOT NULL,
+	material_id BIGINT NOT NULL,
+	quantity BIGINT NOT NULL,
+	unit_retail_price NUMERIC(4,2) NOT NULL,
+	PRIMARY KEY (clothing_id),
+	FOREIGN KEY (type_id) REFERENCES clothing_types (type_id),
+	FOREIGN KEY (subtype_id) REFERENCES clothing_types (subtype_id),
+	FOREIGN KEY (size_id) REFERENCES clothing_types (size_id),
+	FOREIGN KEY (color_id) REFERENCES clothing_types (color_id),
+	FOREIGN KEY (material_id) REFERENCES clothing_types (material_id)
+);
