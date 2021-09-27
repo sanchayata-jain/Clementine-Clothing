@@ -57,19 +57,18 @@ public class CustomerController {
 
     @GetMapping("/logged_in/account_details")
     public Quartet<String, String, String, String> getCustomerAccountDetails() {
-        if (customerService.getCustomer() == null) {
-            /* possibly throw exception so front end knows user must log in
-            before seeing account details. */
-            System.out.println("customer needs to log in first");
-            return null;
-        }
-        Customer customerAccountDetails = customerService.getCustomer();
+        try {
+            Customer customerAccountDetails = customerService.getCustomer();
 
-        Quartet<String, String, String, String> accountDetails = new Quartet<String, String, String, String>(customerAccountDetails.getFirstName(),
-                customerAccountDetails.getLastName(),
-                customerAccountDetails.getEmail(),
-                customerAccountDetails.getMobileNumber());
-        return accountDetails;
+            Quartet<String, String, String, String> accountDetails = new Quartet<String, String, String, String>(customerAccountDetails.getFirstName(),
+                    customerAccountDetails.getLastName(),
+                    customerAccountDetails.getEmail(),
+                    customerAccountDetails.getMobileNumber());
+            return accountDetails;
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+        }
     }
 
 
@@ -101,6 +100,7 @@ public class CustomerController {
 
 
     @GetMapping("/makePurchase")
+    // for when a customer makes a purchase, they get an order ref back
     public int customerWantsOrderReference() {
         int orderId = 0;
         try {
@@ -120,15 +120,24 @@ public class CustomerController {
                                          @RequestParam String color,
                                          @RequestParam String size,
                                          @RequestParam int quantity) {
-
-        customerService.addItemsToBasket(type, subtype, material, color, size, quantity);
+        try {
+            customerService.addItemsToBasket(type, subtype, material, color, size, quantity);
+        } catch(Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+        }
     }
 
 
     //method for customer viewing their basket using a @GetMapping
     @GetMapping("/logged_in/basket")
     public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
-        return(customerService.getCustomerBasketContent());
+        try {
+            return (customerService.getCustomerBasketContent());
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+        }
     }
 
 

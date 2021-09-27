@@ -28,7 +28,10 @@ public class CustomerService {
     }
 
 
-    public Customer getCustomer() {
+    public Customer getCustomer() throws Exception {
+        if (this.customerAccountInfo == null) {
+            throw new Exception("You need to log in, to see your customer account details!");
+        }
         return this.customerAccountInfo;
     }
 
@@ -53,9 +56,6 @@ public class CustomerService {
     public int customerMakesPurchase() throws Exception {
         LocalDate orderDate = LocalDate.now();
         LocalTime orderTime = LocalTime.now();
-//        if (this.customerAccountInfo == null) {
-//            // throw an error
-//        }
         int orderReference = 0;
         try {
             orderReference = database_access_customer.createOrderRef(this.customerAccountInfo.getId(), orderDate, orderTime);
@@ -73,11 +73,17 @@ public class CustomerService {
 
     public void addItemsToBasket(String type, String subtype,
                                  String material, String color,
-                                 String size, int quantity) {
+                                 String size, int quantity) throws Exception {
 
-        database_access_customer.addItemsToBasket(type, subtype, material, color, size, quantity,
-                                                 this.customerAccountInfo.getId());
+        if (this.customerAccountInfo == null) {
+            throw new Exception("Please log in to add an item to your basket");
+        } else {
+
+            database_access_customer.addItemsToBasket(type, subtype, material, color, size, quantity,
+                    this.customerAccountInfo.getId());
+        }
     }
+
 
     public void removeItemFromBasket(int clothingId) {
         database_access_customer.removeItemFromBasket(clothingId);
@@ -89,7 +95,10 @@ public class CustomerService {
     }
 
 
-    public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() {
+    public ArrayList<Pair<ClothingItem, Integer>> getCustomerBasketContent() throws Exception {
+        if (this.customerAccountInfo == null) {
+            throw new Exception("Please log into your account to view your basket");
+        }
         ArrayList<Pair<Integer, Integer>> basketItemsIdQuantity = database_access_customer.getBasketItems(this.customerAccountInfo.getId());
         ArrayList<Pair<ClothingItem, Integer>> basketContents = new ArrayList<Pair<ClothingItem, Integer>>();
         for (Pair<Integer, Integer> idAndQuantity : basketItemsIdQuantity) {
@@ -99,7 +108,6 @@ public class CustomerService {
             Pair<ClothingItem, Integer> basketItem = new Pair<ClothingItem, Integer>(clothingItem, quantityOfClothingItem);
             basketContents.add(basketItem);
         }
-
         return basketContents;
     }
 
