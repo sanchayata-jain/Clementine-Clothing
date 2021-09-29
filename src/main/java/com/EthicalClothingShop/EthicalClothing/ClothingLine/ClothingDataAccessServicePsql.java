@@ -158,13 +158,13 @@ public class ClothingDataAccessServicePsql implements ClothingDAO {
 
     public void updateClothingItem(double price, int quantity, int clothingId) {
 
-        String updateClothingItemQuantity = "UPDATE clothing_items_inventory SET quantity = " + "" + quantity + "" + " WHERE " +
-                "clothing_id = " + "" + clothingId + "";
+        String updateClothingItemQuantity = "UPDATE clothing_items_inventory SET quantity = " +  quantity + " WHERE " +
+                "clothing_id = " +  clothingId;
 
         jdbcTemplate.update(updateClothingItemQuantity);
 
-        String updateClothingItemPrice = "UPDATE clothing_items_inventory SET price = " + "" + price + "" + " WHERE " +
-                "clothing_id = " + "" + clothingId + "";
+        String updateClothingItemPrice = "UPDATE clothing_items_inventory SET unit_retail_price = "  + price +  " WHERE " +
+                "clothing_id = " + clothingId;
 
         jdbcTemplate.update(updateClothingItemPrice);
     }
