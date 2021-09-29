@@ -70,6 +70,47 @@ public class ClothingDataAccessServicePsql implements ClothingDAO {
         }
     }
 
+    public List<String> getClothingTypes() {
+        String getClothingTypeNamesQuery = "";
+
+        String getBasketContentQuery = "CREATE TEMP VIEW basket_content_view " +
+                "AS " +
+                "SELECT ROW_NUMBER() OVER() AS num_row, clothing_id, quantity " +
+                "FROM basket_content WHERE customer_id = " + "'" + customerId + "'";
+
+        jdbcTemplate.execute(getBasketContentQuery);
+
+        for (int i = 1; i <= numberOfBasketItems; i++) {
+            String getBasketItemIdQuery = "SELECT clothing_id " +
+                    "FROM basket_content_view WHERE num_row = " + i ;
+
+            String getBasketItemQuantityQuery = "SELECT quantity " +
+                    "FROM basket_content_view WHERE num_row = " + i ;
+
+            int clothingId = jdbcTemplate.queryForObject(getBasketItemIdQuery, int.class);
+            int quantity = jdbcTemplate.queryForObject(getBasketItemQuantityQuery, int.class);
+
+            String addNewOrderContent = """
+            INSERT INTO order_contents(order_id, clothing_id, quantity)
+                                                  VALUES(?, ?, ?)
+            """;
+            jdbcTemplate.update(addNewOrderContent, orderRef, clothingId, quantity);
+
+            String getInventoryStock = "SELECT quantity FROM clothing_items_inventory WHERE clothing_id = " + "" + clothingId + "";
+            int currentClothingItemStock = jdbcTemplate.queryForObject(getInventoryStock, int.class);
+            int newStock = currentClothingItemStock - quantity;
+
+            String updateInventoryStock = "UPDATE clothing_items_inventory SET quantity = " + "" + newStock + "" + " WHERE " +
+                    "clothing_id = " + "" + clothingId + "";
+            jdbcTemplate.update(updateInventoryStock);
+        }
+
+
+
+
+        return null;
+    }
+
     @Override
     public void addClothingItem(ClothingItem clothingItem) {
         // Adding a clothing item record into the database

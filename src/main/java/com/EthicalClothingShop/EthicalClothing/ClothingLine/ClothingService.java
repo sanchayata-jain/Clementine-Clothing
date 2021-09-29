@@ -20,6 +20,10 @@ public class ClothingService {
         return clothingItems;
     }
 
+    public List<String> getClothingTypes() {
+        return(database_access.getClothingTypes());
+    }
+
 
     public ArrayList<ClothingItem> getClothingItemsOfSameType(String clothingType) {
         boolean requestedTypeFound = false;

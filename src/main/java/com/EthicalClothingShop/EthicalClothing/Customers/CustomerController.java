@@ -107,8 +107,6 @@ public class CustomerController {
     }
 
 
-
-
     @PostMapping("/logged_in")
     public void customerWantsToLogIn(@RequestParam String email,
                                      @RequestParam String password) {
