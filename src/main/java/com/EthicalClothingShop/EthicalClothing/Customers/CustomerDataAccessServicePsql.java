@@ -262,8 +262,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     }
 
 
-
-
     public int addCustomerInformation(String firstName, String lastName, String emailAddress,
                                       String phoneNumber, String password) {
 
@@ -280,6 +278,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return customerId;
     }
+
 
     public void deleteCustomer(String email, String password) {
         String getCustomerIDQuery = "SELECT customer_id FROM customer_information WHERE email LIKE " +
@@ -339,12 +338,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         if (mobileNumber != null) {
             jdbcTemplate.update(editMobileNumberQuery);
         }
-
-
     }
-
-
-
 
 
     public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,

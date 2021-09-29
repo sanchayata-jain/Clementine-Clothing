@@ -64,6 +64,7 @@ public class CustomerController {
     }
 
 
+
     // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
     @PutMapping("/logged_in/basket")
     public void customerEditsBasketContents(@RequestParam boolean isIncreasingQuantity,
