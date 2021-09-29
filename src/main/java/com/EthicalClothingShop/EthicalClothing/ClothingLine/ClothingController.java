@@ -51,10 +51,6 @@ public class ClothingController {
         clothingService.addClothingType(typeName);
     }
 
-    @GetMapping("/type")
-    public List<String> getClothingTypes() {
-        return(clothingService.getClothingTypes());
-    }
 
     @PostMapping("/add-subtype")
     public void addClothingSubtype(@RequestParam String subtypeName) {
