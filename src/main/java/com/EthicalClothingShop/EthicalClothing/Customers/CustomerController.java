@@ -47,6 +47,14 @@ public class CustomerController {
         }
     }
 
+    @DeleteMapping("/logged_in/delete-account")
+    public void customerDeletesAccount(@RequestParam String email,
+                                       @RequestParam String password) {
+
+        customerService.deleteCustomer(email, password);
+    }
+
+
     // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
     @PutMapping("/logged_in/basket")
     public void customerEditsBasketContents(@RequestParam boolean isIncreasingQuantity,

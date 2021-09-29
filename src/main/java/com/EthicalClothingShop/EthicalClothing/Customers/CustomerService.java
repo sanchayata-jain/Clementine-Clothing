@@ -70,7 +70,6 @@ public class CustomerService {
     }
 
 
-
     public void addItemsToBasket(String type, String subtype,
                                  String material, String color,
                                  String size, int quantity) throws Exception {
@@ -112,6 +111,10 @@ public class CustomerService {
     }
 
 
+    public void deleteCustomer(String email, String password) {
+        database_access_customer.deleteCustomer(email, password);
+    }
+
 
 
     public void addNewCustomerAccount(String firstName, String lastName, String email,
@@ -126,9 +129,6 @@ public class CustomerService {
             int newCustomerId = database_access_customer.addCustomerInformation(firstName, lastName, email,
                                                                                 mobile, password);
 
-            System.out.println("In addNewCustomerAccount service");
-            System.out.println(newCustomerId);
-            System.out.println();
             // add both billing and delivery address
             this.addNewCustomerAddresses(newCustomerId, firstLineBillingAddress, secondLineBillingAddress,
                                         billingCityOrTown, billingCountyOrState, billingPostcode,

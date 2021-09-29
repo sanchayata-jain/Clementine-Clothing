@@ -281,7 +281,39 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
         return customerId;
     }
 
+    public void deleteCustomer(String email, String password) {
+        String getCustomerIDQuery = "SELECT customer_id FROM customer_information WHERE email LIKE " +
+                "'" + email + "'";
+        int customerId =  jdbcTemplate.queryForObject(getCustomerIDQuery, int.class);
+        String getOrderIdQuery = "SELECT order_id FROM orders_information WHERE customer_id= " +
+                customerId;
+        try {
+            int orderId = jdbcTemplate.queryForObject(getOrderIdQuery, int.class);
 
+            jdbcTemplate.update("DELETE FROM order_contents WHERE " +
+                    "order_id = " + "" + orderId + "");
+            jdbcTemplate.update("DELETE FROM orders_information WHERE " +
+                    "customer_id = " + "" + customerId + "");
+        } catch (Exception e) {
+            System.out.println("Nothing in here to delete");
+        }
+        try {
+            jdbcTemplate.update("DELETE FROM basket_content WHERE " +
+                    "customer_id = " + "" + customerId + "");
+        } catch (Exception e) {
+            System.out.println("This customer has currently not got any items in their basket");
+        }
+        jdbcTemplate.update("DELETE FROM default_delivery_address WHERE " +
+                "customer_id = " + "" + customerId + "");
+        jdbcTemplate.update("DELETE FROM default_billing_address WHERE " +
+                "customer_id = " + "" + customerId + "");
+        jdbcTemplate.update("DELETE FROM customer_address_book WHERE " +
+                "customer_id = " + "" + customerId + "");
+        jdbcTemplate.update("DELETE FROM addresses WHERE " +
+                "customer_id = " + "" + customerId + "");
+        jdbcTemplate.update("DELETE FROM customer_information WHERE " +
+                "customer_id = " + "" + customerId + "");
+    }
 
 
 
