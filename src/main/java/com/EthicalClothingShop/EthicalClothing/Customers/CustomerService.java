@@ -115,6 +115,9 @@ public class CustomerService {
         database_access_customer.deleteCustomer(email, password);
     }
 
+    public void editCustomer(String firstName, String lastName, String mobileNumber) {
+        database_access_customer.editCustomer(this.customerAccountInfo.getId(), firstName, lastName, mobileNumber);
+    }
 
 
     public void addNewCustomerAccount(String firstName, String lastName, String email,

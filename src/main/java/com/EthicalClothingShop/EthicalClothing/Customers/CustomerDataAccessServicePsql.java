@@ -315,6 +315,34 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
                 "customer_id = " + "" + customerId + "");
     }
 
+//    public int getCustomerId(String email, String password)  {
+//        String getCustomerIDQuery = "SELECT customer_id FROM customer_information WHERE email LIKE " +
+//                "'" + email + "'" + " AND password LIKE " + "'" + password + "'";
+//        int customerId =  jdbcTemplate.queryForObject(getCustomerIDQuery, int.class);
+//
+//        return customerId;
+//    }
+
+    public void editCustomer(int customerId, String firstName, String lastName, String mobileNumber) {
+        String editFirstNameQuery = "UPDATE customer_information SET first_name= " + "'"+ firstName +"'" +
+                " WHERE customer_id = " + customerId;
+        String editLastNameQuery = "UPDATE customer_information SET last_name= " + "'"+ lastName +"'" +
+                " WHERE customer_id = " + customerId;
+        String editMobileNumberQuery = "UPDATE customer_information SET phone_number= " + "'"+ mobileNumber +"'" +
+                " WHERE customer_id = " + customerId;
+        if (firstName != null) {
+            jdbcTemplate.update(editFirstNameQuery);
+        }
+        if (lastName != null) {
+            jdbcTemplate.update(editLastNameQuery);
+        }
+        if (mobileNumber != null) {
+            jdbcTemplate.update(editMobileNumberQuery);
+        }
+
+
+    }
+
 
 
 
@@ -322,7 +350,6 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
     public int addCustomerAddressToAddressBook(int customerId, String firstLineAddress, String secondLineAddress,
                                                 String cityOrTown, String countyOrState, String postcode) {
 
-        System.out.print(customerId);
         String addAddress = """
                 INSERT INTO addresses(customer_id, first_line, second_line, city_town, county_state, postcode)
                 VALUES(?,?,?,?,?,?)
@@ -342,6 +369,7 @@ public class CustomerDataAccessServicePsql implements CustomerDAO{
 
         return addressId;
     }
+
 
 
     public void addToCustomerAddressBook(int customerId, int addressId) {

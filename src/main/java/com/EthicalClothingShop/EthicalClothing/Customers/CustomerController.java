@@ -54,6 +54,15 @@ public class CustomerController {
         customerService.deleteCustomer(email, password);
     }
 
+    // customer should already be logged in first to edit account details
+    @PutMapping("/logged_in/edit-account")
+    public void customerEditsAccountDetails(@RequestParam(required = false) String firstName,
+                                            @RequestParam(required = false) String lastName,
+                                            @RequestParam(required = false) String mobileNumber) {
+
+        customerService.editCustomer(firstName, lastName, mobileNumber);
+    }
+
 
     // method for editing basket items is needed @PutMapping will involve increasing and decreasing quantity in basket
     @PutMapping("/logged_in/basket")
