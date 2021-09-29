@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "ethical-clothes/homepage")
+@RequestMapping(path = "ethical-clothes")
 public class ClothingController {
     private ClothingService clothingService;
 
@@ -41,9 +41,34 @@ public class ClothingController {
         return clothingItemsBySubType;
     }
 
-    @PostMapping
+    @PostMapping("add-clothing-item")    //to add an entire item of clothing to the clothing_items_inventory
     public void addClothingItem(@RequestBody ClothingItem clothingItem) {
         clothingService.addClothingItem(clothingItem);
+    }
+
+    @PostMapping("/add-type")
+    public void addClothingType(@RequestParam String typeName) {
+        clothingService.addClothingType(typeName);
+    }
+
+    @PostMapping("/add-subtype")
+    public void addClothingSubtype(@RequestParam String subtypeName) {
+        clothingService.addClothingSubtype(subtypeName);
+    }
+
+    @PostMapping("/add-material")
+    public void addClothingMaterial(@RequestParam String materialName) {
+        clothingService.addClothingMaterial(materialName);
+    }
+
+    @PostMapping("/add-color")
+    public void addClothingColor(@RequestParam String colorName) {
+        clothingService.addClothingColor(colorName);
+    }
+
+    @PostMapping("/add-size")
+    public void addClothingSize(@RequestParam String sizeName) {
+        clothingService.addClothingSize(sizeName);
     }
 
     @DeleteMapping("{barcode}")

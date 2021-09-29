@@ -60,8 +60,27 @@ public class ClothingService {
 
 
     public void addClothingItem(ClothingItem clothingItem) {
-
         database_access.addClothingItem(clothingItem);
+    }
+
+    public void addClothingType(String type) {
+        database_access.addClothingType(type);
+    }
+
+    public void addClothingSubtype(String subtype) {
+        database_access.addClothingType(subtype);
+    }
+
+    public void addClothingMaterial(String material) {
+        database_access.addClothingMaterial(material);
+    }
+
+    public void addClothingColor(String color) {
+        database_access.addClothingColor(color);
+    }
+
+    public void addClothingSize(String size) {
+        database_access.addClothingSize(size);
     }
 
 

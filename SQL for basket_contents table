@@ -1,0 +1,8 @@
+CREATE table basket_content (
+	customer_id INT NOT NULL,
+	clothing_id INT NOT NULL,
+	quantity INT NOT NULL,
+	PRIMARY KEY (customer_id, clothing_id),
+	FOREIGN KEY (customer_id) REFERENCES customer_information (customer_id),
+	FOREIGN KEY (clothing_id) REFERENCES clothing_items_inventory (clothing_id)
+);

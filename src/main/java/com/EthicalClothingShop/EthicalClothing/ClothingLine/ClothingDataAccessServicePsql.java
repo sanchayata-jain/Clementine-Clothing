@@ -109,6 +109,45 @@ public class ClothingDataAccessServicePsql implements ClothingDAO {
                                         clothingItem.getPrice());
     }
 
+    public void addClothingType(String type) {
+        String addNewClothingType = """
+        INSERT INTO clothing_types(type_name)
+        VALUES(?)
+        """;
+        jdbcTemplate.update(addNewClothingType, type);
+    }
+
+    public void addClothingSubtype(String subtype) {
+        String addNewClothingSubtype= """
+        INSERT INTO clothing_subtypes(subtype_name)
+        VALUES(?)
+        """;
+        jdbcTemplate.update(addNewClothingSubtype, subtype);
+    }
+
+    public void addClothingMaterial(String material) {
+        String addNewMaterial = """
+        INSERT INTO materials(material_name)
+        VALUES(?)
+        """;
+        jdbcTemplate.update(addNewMaterial, material);
+    }
+
+    public void addClothingColor(String color) {
+        String addNewColor = """
+        INSERT INTO colors(color_name)
+        VALUES(?)
+        """;
+        jdbcTemplate.update(addNewColor, color);
+    }
+
+    public void addClothingSize(String size) {
+        String addNewSize = """
+        INSERT INTO sizes(size_name)
+        VALUES(?)
+        """;
+        jdbcTemplate.update(addNewSize, size);
+    }
 
     @Override
     public void removeClothingItem(ClothingItem clothingItem) {
